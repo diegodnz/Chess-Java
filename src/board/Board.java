@@ -4,7 +4,7 @@ public class Board {
 
 	private int numRows;
 	private int numColumns;
-	public Piece[][] board;
+	protected Piece[][] board;
 	
 	public Board(int numRows, int numColumns) {
 		this.numRows = numRows;
@@ -18,6 +18,10 @@ public class Board {
 	
 	public int getNumColumns() {
 		return numColumns;
+	}
+	
+	public Piece[][] getBoard(){
+		return board;
 	}
 	
 	public Piece seePosition(int row, int column) {

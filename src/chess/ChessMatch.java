@@ -1,20 +1,45 @@
 package chess;
 
-import board.ChessBoard;
+import board.Piece;
 import board.Position;
-import chess.pieces.*;
+import chess.pieces.Bishop;
+import chess.pieces.Color;
+import chess.pieces.Horse;
+import chess.pieces.King;
+import chess.pieces.Pawn;
+import chess.pieces.Queen;
+import chess.pieces.Rook;
 
 public class ChessMatch {
 	
 	private ChessBoard board;
+	private String turn;
 	
 	public ChessMatch() {
 		board = new ChessBoard();
+		turn = "WHITE";
 		startMatch();
 	}
 	
 	public ChessBoard getBoard() {
 		return board;
+	}
+	
+	public String getTurn() {
+		return turn;
+	}
+	
+	public void peformMove(ChessMove move) {
+		int sourceRow = move.getSource().getRow();
+		int sourceColumn = move.getSource().getColumn();
+		int targetRow = move.getTarget().getRow();
+		int targetColumn = move.getTarget().getColumn();
+		
+		Piece piece = board.getBoard()[sourceRow][sourceColumn];
+		piece.setPosition(move.getTarget());
+		board.getBoard()[sourceRow][sourceColumn] = null;
+		board.getBoard()[targetRow][targetColumn] = piece;
+		
 	}
 	
 	private void startMatch() {

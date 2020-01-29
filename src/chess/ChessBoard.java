@@ -1,4 +1,8 @@
-package board;
+package chess;
+
+import board.Board;
+import board.Piece;
+import board.Position;
 
 public class ChessBoard extends Board{
 

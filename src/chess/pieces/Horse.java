@@ -1,6 +1,6 @@
 package chess.pieces;
 
-import board.ChessBoard;
+import chess.ChessBoard;
 import board.Piece;
 
 public class Horse extends Piece{
