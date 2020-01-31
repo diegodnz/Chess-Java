@@ -13,11 +13,11 @@ import chess.pieces.Rook;
 public class ChessMatch {
 	
 	private ChessBoard board;
-	private String turn;
+	private Turn turn;
 	
 	public ChessMatch() {
 		board = new ChessBoard();
-		turn = "WHITE";
+		turn = Turn.WHITETURN;
 		startMatch();
 	}
 	
@@ -25,8 +25,20 @@ public class ChessMatch {
 		return board;
 	}
 	
-	public String getTurn() {
+	public Turn getTurn() {
 		return turn;
+	}
+	
+	public void setTurn(Turn turn) {
+		this.turn = turn;
+	}
+	
+	public boolean validPiece(Position position) {
+		ChessPiece piece = (ChessPiece)board.getPieces()[position.getRow()][position.getColumn()];
+		if(piece == null) {
+			return false;
+		}
+		return (piece.getColor() == Color.BLACK && turn == Turn.BLACKTURN) || (piece.getColor() == Color.WHITE && turn == Turn.WHITETURN);                
 	}
 	
 	public void peformMove(ChessMove move) {
@@ -35,10 +47,10 @@ public class ChessMatch {
 		int targetRow = move.getTarget().getRow();
 		int targetColumn = move.getTarget().getColumn();
 		
-		Piece piece = board.getBoard()[sourceRow][sourceColumn];
+		Piece piece = board.getPieces()[sourceRow][sourceColumn];
 		piece.setPosition(move.getTarget());
-		board.getBoard()[sourceRow][sourceColumn] = null;
-		board.getBoard()[targetRow][targetColumn] = piece;
+		board.getPieces()[sourceRow][sourceColumn] = null;
+		board.getPieces()[targetRow][targetColumn] = piece;
 		
 	}
 	

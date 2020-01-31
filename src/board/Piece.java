@@ -2,8 +2,8 @@ package board;
 
 public class Piece {
 
-	private Position position;
-	private Board board;
+	protected Position position;
+	protected Board board;
 	
 	public Piece(Board board) {
 		this.board = board;
@@ -12,7 +12,7 @@ public class Piece {
 	public Position getPosition() {
 		return position;
 	}
-	
+		
 	public void setPosition(Position position) {
 		this.position = position;
 	}

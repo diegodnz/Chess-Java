@@ -1,15 +1,21 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
+import board.Position;
 import chess.ChessBoard;
-import board.Piece;
+import chess.ChessPiece;
 
-public class King extends Piece{
-
-	private Color color;
+public class King extends ChessPiece{
 	
 	public King(ChessBoard board, Color color) {
-		super(board);
-		this.color = color;
+		super(board, color);		
+	}
+	
+	@Override
+	public ArrayList<Position> getMoves() {
+		ArrayList<Position> moves = new ArrayList<Position>();
+		return moves;
 	}
 	
 	@Override
@@ -17,7 +23,7 @@ public class King extends Piece{
 		if(color == Color.BLACK) {
 			return "K";
 		}else {
-			return "k";
+			return "k'";
 		}
 	}
 }

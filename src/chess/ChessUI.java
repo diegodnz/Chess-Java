@@ -1,30 +1,32 @@
 package chess;
 
-import java.util.InputMismatchException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-import board.Piece;
 import board.Position;
+import chess.pieces.Color;
 
 public class ChessUI {
 	
-	public static void printBoard(ChessBoard board) {
-		for(int row = 0; row < board.getNumRows(); row++) {
+	public static void printBoard(ChessMatch match) {
+		System.out.println("   a b c d e f g h\n");
+		for(int row = 0; row < match.getBoard().getNumRows(); row++) {			
+			System.out.print(8-row + "  ");
 			
-			System.out.print(row+1 + " ");
-			
-			for(int column = 0; column < board.getNumColumns(); column++) {
-				Piece piece = board.seePosition(row, column);
+			for(int column = 0; column < match.getBoard().getNumColumns(); column++) {
+				ChessPiece piece = (ChessPiece)match.getBoard().seePosition(row, column);
 				if(piece == null) {
 					System.out.print(". ");
-				}else {
+				}else if(piece.getColor() == Color.BLACK){
 					System.out.print(piece + " ");
-				}			
+				}else {
+					System.out.print(piece);
+				}
 			}
 			
-			System.out.println();			
+			System.out.println("  " + (8-row));			
 		}		
-		System.out.println("\n  a b c d e f g h");
+		System.out.println("\n   a b c d e f g h");
 	}
 	
 	public static Position readPosition(Scanner sc) {
@@ -35,22 +37,41 @@ public class ChessUI {
 		return chessPosition.toBoardPosition();
 	}
 	
-	public static ChessMove play(String turn, Scanner sc) {
-		if(turn.matches("WHITE")){
-			System.out.printf("Player1 turn!! \nEnter the position: ");
+	public static ChessMove play(ChessMatch match, Scanner sc) {
+		if(match.getTurn() == Turn.WHITETURN){
+			System.out.printf("\nPlayer1 turn!!");
 		}else {
-			System.out.printf("Player2 turn!! \nEnter the source position: ");
+			System.out.printf("\nPlayer2 turn!!");
 		}		
 		
 		try {
+			System.out.print("\nEnter the source position: ");
 			Position sourcePosition = readPosition(sc);
+			while(!match.validPiece(sourcePosition)) {
+				System.out.print("Please, enter a position that has a piece of yours: ");
+				sourcePosition = readPosition(sc);
+			}			
 			
+			ChessPiece sourcePiece = (ChessPiece)(match.getBoard().seePosition(sourcePosition));
+			ArrayList<Position> possibleMoves = sourcePiece.getMoves();
+			
+			if(possibleMoves.isEmpty()) {
+				System.out.println("There is no movements to do with this piece.");
+				return play(match, sc);
+			}
+			
+			System.out.print("\nPossible movements: ");		
+			for(Position move: possibleMoves) {
+				System.out.print(ChessPosition.toChessPosition(move) + " ");
+			}			
+			System.out.print("\n\n");
 			System.out.print("Enter the target position: ");
 			Position targetPosition = readPosition(sc);
 			
 			return new ChessMove(sourcePosition, targetPosition);
 		}catch (RuntimeException e) {
-			throw new InputMismatchException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)");
+			System.out.println("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)");			
+			return play(match, sc);
 		}
 	}
 

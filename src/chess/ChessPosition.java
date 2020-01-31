@@ -13,6 +13,15 @@ public class ChessPosition {
 	}
 	
 	public Position toBoardPosition() {
-		return new Position(row-1, column - 'a');
+		return new Position(8-row, column - 'a');
+	}
+	
+	public static ChessPosition toChessPosition(Position position) {
+		return new ChessPosition(8-position.getRow(), (char)('a' + position.getColumn()));
+	}
+	
+	@Override
+	public String toString() {
+		return "" + column + row;
 	}
 }
