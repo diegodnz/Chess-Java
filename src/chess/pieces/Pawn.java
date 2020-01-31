@@ -29,7 +29,7 @@ public class Pawn extends ChessPiece{
 		ArrayList<Position> moves = new ArrayList<Position>();
 		ChessPiece possiblePiece;
 		boolean canStepFoward = (color == Color.BLACK && position.getRow() < 7) || (color == Color.WHITE && position.getRow() > 0);
-		boolean firstMove = (color == color.BLACK && position.getRow() == 1) || (color == Color.WHITE && position.getRow() == 6);
+		boolean firstMove = (color == Color.BLACK && position.getRow() == 1) || (color == Color.WHITE && position.getRow() == 6);
 				
 		if(canStepFoward) {
 			

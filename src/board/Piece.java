@@ -17,4 +17,8 @@ public class Piece {
 		this.position = position;
 	}
 	
+	public void setPosition(int row, int column) {
+		this.position = new Position(row, column);
+	}
+	
 }

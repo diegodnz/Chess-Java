@@ -18,13 +18,56 @@ public class Rook extends ChessPiece{
 		ChessPiece possiblePiece;
 		
 		//UP
-		while(position.getRow() > 0) {
-			possiblePiece = (ChessPiece)board.seePosition(position.getRow()-1, position.getColumn());
-			if(possiblePiece != null && possiblePiece.getColor() != color)
-			moves.add(new Position(position.getRow()-1, position.getColumn()));
-			
+		for(int i = position.getRow(); i > 0; i--) {	
+			possiblePiece = (ChessPiece)board.seePosition(i - 1, position.getColumn());
+			if(possiblePiece == null) {
+				moves.add(new Position(i - 1, position.getColumn()));
+			}else {
+				if(possiblePiece.getColor() != color) {			
+					moves.add(new Position(i - 1, position.getColumn()));
+				}
+				break;
+			}
+		}		
+		
+		//DOWN
+		for(int i = position.getRow(); i < 7; i++) {		
+			possiblePiece = (ChessPiece)board.seePosition(i + 1, position.getColumn());
+			if(possiblePiece == null) {
+				moves.add(new Position(i + 1, position.getColumn()));
+			}else {
+				if(possiblePiece.getColor() != color) {			
+					moves.add(new Position(i + 1, position.getColumn()));
+				}
+				break;
+			}
 		}
 		
+		//RIGHT
+		for(int i = position.getColumn(); i < 7; i++) {
+			possiblePiece = (ChessPiece)board.seePosition(position.getRow(), i + 1);
+			if(possiblePiece == null) {
+				moves.add(new Position(position.getRow(), i + 1));
+			}else {
+				if(possiblePiece.getColor() != color) {	
+					moves.add(new Position(position.getRow(), i + 1));
+				}
+				break;
+			}
+		}
+		
+		//LEFT
+		for(int i = position.getColumn(); i > 0; i--) {
+			possiblePiece = (ChessPiece)board.seePosition(position.getRow(), i - 1);
+			if(possiblePiece == null) {
+				moves.add(new Position(position.getRow(), i - 1));
+			}else {
+				if(possiblePiece.getColor() != color) {			
+					moves.add(new Position(position.getRow(), i - 1));
+				}
+				break;
+			}
+		}
 		
 		return moves;
 	}
