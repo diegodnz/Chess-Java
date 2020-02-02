@@ -28,6 +28,11 @@ public class Board {
 		this.pieces = pieces;
 	}
 	
+	public boolean positionInBoard(Position position) {
+		return position.getRow() < numRows && position.getColumn() < numColumns
+				&& position.getRow() >= 0 && position.getColumn() >= 0;
+	}
+	
 	public Piece seePosition(int row, int column) {		
 		return pieces[row][column];
 	}

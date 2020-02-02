@@ -18,7 +18,7 @@ public class ChessUI {
 			for(int column = 0; column < board.getNumColumns(); column++) {
 				Piece piece = board.seePosition(row, column);
 				if(piece == null) {
-					System.out.print(". ");
+					System.out.print("- ");
 				}else {
 					System.out.print(piece);				
 				}

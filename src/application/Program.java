@@ -9,10 +9,6 @@ import chess.Turn;
 
 public class Program {
 	
-	public static void clearScreen() { 
-		
-	}  
-	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
