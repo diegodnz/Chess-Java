@@ -7,7 +7,6 @@ import application.ClearScreen;
 import board.BoardException;
 import board.Piece;
 import board.Position;
-import chess.pieces.Color;
 
 public class ChessUI {
 	
@@ -38,7 +37,7 @@ public class ChessUI {
 		return chessPosition.toBoardPosition();
 	}
 	
-	public static Position readPosition(ChessMatch match, Scanner sc, String type, Position sourcePosition) {
+	public static Position readPosition(ChessMatch match, Scanner sc, String type, Position sourcePosition, boolean printBoard) {
 		try {
 			Position position;
 			if(type.matches("Source")) {
@@ -49,30 +48,32 @@ public class ChessUI {
 				ArrayList<Position> possibleMoves = sourcePiece.getMoves();
 				
 				if(possibleMoves.isEmpty()) {
-					throw new ChessException("There is no movements to do with this piece.");
+					throw new ChessException("There are no movements to do with this piece.");
 				}
 				
 			}else {
 				ChessPiece sourcePiece = match.validPiece(sourcePosition);
 				ArrayList<Position> possibleMoves = sourcePiece.getMoves();					
 				
-				ClearScreen.clear();
-				ChessBoard movementBoard = new ChessBoard();
-				for(int i = 0; i < 8; i++) {
-					movementBoard.getPieces()[i] = match.getBoard().getPieces()[i].clone();
-				}
-				for(Position move: possibleMoves) {
-					Piece possiblePiece = movementBoard.seePosition(move);
-					if(possiblePiece == null) {
-						movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, "* ");
-					}else {
-						movementBoard.getPieces()[move.getRow()][move.getColumn()] 
-								= new Piece(movementBoard, possiblePiece.toString().charAt(0) + "*");
+				if(printBoard) {
+					ClearScreen.clear();
+					ChessBoard movementBoard = new ChessBoard();
+					for(int i = 0; i < 8; i++) {
+						movementBoard.getPieces()[i] = match.getBoard().getPieces()[i].clone();
 					}
+					for(Position move: possibleMoves) {
+						Piece possiblePiece = movementBoard.seePosition(move);
+						if(possiblePiece == null) {
+							movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, "* ");
+						}else {
+							movementBoard.getPieces()[move.getRow()][move.getColumn()] 
+									= new Piece(movementBoard, possiblePiece.toString().charAt(0) + "<");
+						}
+					}
+					printBoard(movementBoard);
 				}
-				printBoard(movementBoard);
 				
-				System.out.print("Possible movements: ");
+				System.out.print("\nPossible movements: ");
 				for(Position move: possibleMoves) {
 					System.out.print(ChessPosition.toChessPosition(move) + " ");
 				}
@@ -80,26 +81,25 @@ public class ChessUI {
 				System.out.print("\nEnter the target position: ");
 				position = getEntry(sc);				
 				
-				if(!possibleMoves.contains(position)) {	
-					throw new ChessException("\nThis is not a valid move with the selected piece\n");
+				if(!possibleMoves.contains(position)) {						
+					throw new ChessException("This is not a valid move with the selected piece");					
 				}
 			}
 		
 			return position;
 		}		
 		catch (NumberFormatException e) {
-			System.out.println("\nInvalid position. Valid positions -> (a1, a2, ..., h7, h8)");
-			return readPosition(match, sc, type, sourcePosition);
+			System.out.println("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)");
+			return readPosition(match, sc, type, sourcePosition, false);
 		}	
 		catch (BoardException e) {
-			System.out.println("\n" + e.getMessage());
-			return readPosition(match, sc, type, sourcePosition);
+			System.out.println(e.getMessage());
+			return readPosition(match, sc, type, sourcePosition, false);
 		}
 		catch (ChessException e) {
-			System.out.println("\n" + e.getMessage());
-			return readPosition(match, sc, type, sourcePosition);
-		}
-		
+			System.out.println(e.getMessage());
+			return readPosition(match, sc, type, sourcePosition, false);
+		}		
 	
 	}
 	
@@ -110,8 +110,8 @@ public class ChessUI {
 			System.out.printf("\nPlayer2 turn!!");
 		}	
 		
-		Position sourcePosition = readPosition(match, sc, "Source", null);		
-		Position targetPosition = readPosition(match, sc, "Target", sourcePosition);			
+		Position sourcePosition = readPosition(match, sc, "Source", null, false);		
+		Position targetPosition = readPosition(match, sc, "Target", sourcePosition, true);			
 		return new ChessMove(sourcePosition, targetPosition);		
 	}
 }
