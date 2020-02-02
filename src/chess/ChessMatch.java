@@ -1,5 +1,6 @@
 package chess;
 
+import board.BoardException;
 import board.Piece;
 import board.Position;
 import chess.pieces.Bishop;
@@ -33,12 +34,19 @@ public class ChessMatch {
 		this.turn = turn;
 	}
 	
-	public boolean validPiece(Position position) {
-		ChessPiece piece = (ChessPiece)board.getPieces()[position.getRow()][position.getColumn()];
+	public ChessPiece validPiece(Position position) throws BoardException, ChessException {
+		ChessPiece piece = (ChessPiece)board.seePosition(position);		
 		if(piece == null) {
-			return false;
+			throw new BoardException("There is no piece in this position.");
+		}else {
+			boolean opponentPiece = (piece.getColor() == Color.BLACK && turn == Turn.WHITETURN) 
+					|| (piece.getColor() == Color.WHITE && turn == Turn.BLACKTURN);
+			if(opponentPiece){
+				throw new ChessException("This piece belongs to your opponent");
+			}else {
+				return piece;
+			}	
 		}
-		return (piece.getColor() == Color.BLACK && turn == Turn.BLACKTURN) || (piece.getColor() == Color.WHITE && turn == Turn.WHITETURN);                
 	}
 	
 	public void peformMove(ChessMove move) {

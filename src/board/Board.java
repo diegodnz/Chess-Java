@@ -24,12 +24,17 @@ public class Board {
 		return pieces;
 	}
 	
-	public Piece seePosition(int row, int column) {
+	public Piece seePosition(int row, int column) {		
 		return pieces[row][column];
 	}
 	
-	public Piece seePosition(Position position) {
-		return pieces[position.getRow()][position.getColumn()];
+	public Piece seePosition(Position position) throws BoardException {
+		try {
+			return pieces[position.getRow()][position.getColumn()];
+		}
+		catch (ArrayIndexOutOfBoundsException e) {			
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
 	}
 	
 }

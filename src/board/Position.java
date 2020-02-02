@@ -1,6 +1,6 @@
 package board;
 
-public class Position {
+public class Position extends Object{
 
 	private int row;
 	private int column;
@@ -21,5 +21,11 @@ public class Position {
 	@Override
 	public String toString() {
 		return "(" + row + ", " + column + ")";
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		Position position = (Position) o;		
+		return position.getRow() == row && position.getColumn() == column;
 	}
 }

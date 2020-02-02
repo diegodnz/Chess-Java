@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import board.BoardException;
 import board.Position;
 import chess.pieces.Color;
 
@@ -29,12 +30,61 @@ public class ChessUI {
 		System.out.println("\n   a b c d e f g h");
 	}
 	
-	public static Position readPosition(Scanner sc) {
+	private static Position getEntry(Scanner sc) throws ChessException {
 		String entry = sc.next();
 		int row = Integer.valueOf(entry.substring(1));
 		char column = entry.charAt(0);
-		ChessPosition chessPosition= new ChessPosition(row, column);
+		ChessPosition chessPosition = new ChessPosition(row, column);
 		return chessPosition.toBoardPosition();
+	}
+	
+	public static Position readPosition(ChessMatch match, Scanner sc, String type, Position sourcePosition) {
+		try {
+			Position position;
+			if(type.matches("Source")) {
+				System.out.print("\nEnter the source position: ");
+				position = getEntry(sc);
+			
+				ChessPiece sourcePiece = match.validPiece(position);
+				ArrayList<Position> possibleMoves = sourcePiece.getMoves();
+				
+				if(possibleMoves.isEmpty()) {
+					throw new ChessException("There is no movements to do with this piece.");
+				}
+				
+			}else {
+				ChessPiece sourcePiece = match.validPiece(sourcePosition);
+				ArrayList<Position> possibleMoves = sourcePiece.getMoves();					
+				
+				System.out.print("Possible movements: ");
+				for(Position move: possibleMoves) {
+					System.out.print(ChessPosition.toChessPosition(move) + " ");
+				}
+				
+				System.out.print("\nEnter the target position: ");
+				position = getEntry(sc);				
+				
+				if(!possibleMoves.contains(position)) {	
+					throw new ChessException("\nThis is not a valid move with the selected piece\n");
+				}
+			}
+		
+			return position;
+		}		
+		catch (NumberFormatException e) {
+			System.out.println("\nInvalid position. Valid positions -> (a1, a2, ..., h7, h8)");
+			return readPosition(match, sc, type, sourcePosition);
+		}	
+		catch (BoardException e) {
+			System.out.println("\n" + e.getMessage());
+			return readPosition(match, sc, type, sourcePosition);
+		}
+		catch (ChessException e) {
+			System.out.println("\n" + e.getMessage());
+			return readPosition(match, sc, type, sourcePosition);
+		}
+		
+	
 	}
 	
 	public static ChessMove play(ChessMatch match, Scanner sc) {
@@ -42,37 +92,10 @@ public class ChessUI {
 			System.out.printf("\nPlayer1 turn!!");
 		}else {
 			System.out.printf("\nPlayer2 turn!!");
-		}		
+		}	
 		
-		try {
-			System.out.print("\nEnter the source position: ");
-			Position sourcePosition = readPosition(sc);
-			while(!match.validPiece(sourcePosition)) {
-				System.out.print("Please, enter a position that has a piece of yours: ");
-				sourcePosition = readPosition(sc);
-			}			
-			
-			ChessPiece sourcePiece = (ChessPiece)(match.getBoard().seePosition(sourcePosition));
-			ArrayList<Position> possibleMoves = sourcePiece.getMoves();
-			
-			if(possibleMoves.isEmpty()) {
-				System.out.println("There is no movements to do with this piece.");
-				return play(match, sc);
-			}
-			
-			System.out.print("\nPossible movements: ");		
-			for(Position move: possibleMoves) {
-				System.out.print(ChessPosition.toChessPosition(move) + " ");
-			}			
-			System.out.print("\n\n");
-			System.out.print("Enter the target position: ");
-			Position targetPosition = readPosition(sc);
-			
-			return new ChessMove(sourcePosition, targetPosition);
-		}catch (RuntimeException e) {
-			System.out.println("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)");			
-			return play(match, sc);
-		}
+		Position sourcePosition = readPosition(match, sc, "Source", null);		
+		Position targetPosition = readPosition(match, sc, "Target", sourcePosition);			
+		return new ChessMove(sourcePosition, targetPosition);		
 	}
-
 }
