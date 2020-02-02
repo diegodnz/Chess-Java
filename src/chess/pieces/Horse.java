@@ -21,7 +21,7 @@ public class Horse extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "H";
+			return "H ";
 		}else {
 			return "h'";
 		}

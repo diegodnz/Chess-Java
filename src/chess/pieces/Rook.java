@@ -80,7 +80,7 @@ public class Rook extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "R";
+			return "R ";
 		}else {
 			return "r'";
 		}

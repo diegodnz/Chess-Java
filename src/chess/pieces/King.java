@@ -21,7 +21,7 @@ public class King extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "K";
+			return "K ";
 		}else {
 			return "k'";
 		}

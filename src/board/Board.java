@@ -24,6 +24,10 @@ public class Board {
 		return pieces;
 	}
 	
+	public void setPieces(Piece[][] pieces) {
+		this.pieces = pieces;
+	}
+	
 	public Piece seePosition(int row, int column) {		
 		return pieces[row][column];
 	}

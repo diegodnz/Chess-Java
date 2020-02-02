@@ -3,25 +3,25 @@ package chess;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import application.ClearScreen;
 import board.BoardException;
+import board.Piece;
 import board.Position;
 import chess.pieces.Color;
 
 public class ChessUI {
 	
-	public static void printBoard(ChessMatch match) {
+	public static void printBoard(ChessBoard board) {
 		System.out.println("   a b c d e f g h\n");
-		for(int row = 0; row < match.getBoard().getNumRows(); row++) {			
+		for(int row = 0; row < board.getNumRows(); row++) {			
 			System.out.print(8-row + "  ");
 			
-			for(int column = 0; column < match.getBoard().getNumColumns(); column++) {
-				ChessPiece piece = (ChessPiece)match.getBoard().seePosition(row, column);
+			for(int column = 0; column < board.getNumColumns(); column++) {
+				Piece piece = board.seePosition(row, column);
 				if(piece == null) {
 					System.out.print(". ");
-				}else if(piece.getColor() == Color.BLACK){
-					System.out.print(piece + " ");
 				}else {
-					System.out.print(piece);
+					System.out.print(piece);				
 				}
 			}
 			
@@ -55,6 +55,22 @@ public class ChessUI {
 			}else {
 				ChessPiece sourcePiece = match.validPiece(sourcePosition);
 				ArrayList<Position> possibleMoves = sourcePiece.getMoves();					
+				
+				ClearScreen.clear();
+				ChessBoard movementBoard = new ChessBoard();
+				for(int i = 0; i < 8; i++) {
+					movementBoard.getPieces()[i] = match.getBoard().getPieces()[i].clone();
+				}
+				for(Position move: possibleMoves) {
+					Piece possiblePiece = movementBoard.seePosition(move);
+					if(possiblePiece == null) {
+						movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, "* ");
+					}else {
+						movementBoard.getPieces()[move.getRow()][move.getColumn()] 
+								= new Piece(movementBoard, possiblePiece.toString().charAt(0) + "*");
+					}
+				}
+				printBoard(movementBoard);
 				
 				System.out.print("Possible movements: ");
 				for(Position move: possibleMoves) {

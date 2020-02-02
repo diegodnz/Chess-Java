@@ -4,6 +4,12 @@ public class Piece {
 
 	protected Position position;
 	protected Board board;
+	protected String name;
+	
+	public Piece(Board board, String name) {
+		this.board = board;
+		this.name = name;
+	}
 	
 	public Piece(Board board) {
 		this.board = board;
@@ -19,6 +25,11 @@ public class Piece {
 	
 	public void setPosition(int row, int column) {
 		this.position = new Position(row, column);
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 	
 }
