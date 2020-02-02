@@ -14,7 +14,11 @@ public class Queen extends ChessPiece{
 	
 	@Override
 	public ArrayList<Position> getMoves() {
+		ArrayList<Position> bishopMoves = Bishop.getMoves(position, board, color);
+		ArrayList<Position> rookMoves = Rook.getMoves(position, board, color);
 		ArrayList<Position> moves = new ArrayList<Position>();
+		moves.addAll(bishopMoves);
+		moves.addAll(rookMoves);
 		return moves;
 	}
 	

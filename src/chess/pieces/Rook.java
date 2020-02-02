@@ -2,6 +2,7 @@ package chess.pieces;
 
 import java.util.ArrayList;
 
+import board.Board;
 import board.Position;
 import chess.ChessBoard;
 import chess.ChessPiece;
@@ -14,6 +15,10 @@ public class Rook extends ChessPiece{
 	
 	@Override
 	public ArrayList<Position> getMoves() {
+		return getMoves(position, board, color);
+	}
+	
+	public static ArrayList<Position> getMoves(Position position, Board board, Color color){
 		ArrayList<Position> moves = new ArrayList<Position>();
 		ChessPiece possiblePiece;
 		
