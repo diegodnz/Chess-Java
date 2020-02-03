@@ -1,7 +1,6 @@
 package chess;
 
 import board.BoardException;
-import board.Piece;
 import board.Position;
 import chess.pieces.Bishop;
 import chess.pieces.Color;
@@ -36,6 +35,14 @@ public class ChessMatch {
 		this.turn = turn;
 	}
 	
+	public ChessPlayer getWhitePlayer() {
+		return whitePlayer;
+	}
+	
+	public ChessPlayer getBlackPlayer() {
+		return blackPlayer;
+	}
+	
 	public ChessPiece validPiece(Position position) throws BoardException, ChessException {
 		ChessPiece piece = (ChessPiece)board.seePosition(position);		
 		if(piece == null) {
@@ -51,25 +58,120 @@ public class ChessMatch {
 		}
 	}
 	
-	public boolean peformMove(ChessMove move) {
+	public void changeTurn() {
+		if(turn == Turn.WHITETURN) {
+			turn = Turn.BLACKTURN;
+		}else {
+			turn = Turn.WHITETURN;
+		}
+	}
+	
+	public ChessPlayer getPlayer(Turn turn) {
+		if(turn == Turn.BLACKTURN) {
+			return blackPlayer;
+		}else {
+			return whitePlayer;
+		}
+	}
+	
+	public void peformMove(ChessMove move) {
 		int sourceRow = move.getSource().getRow();
 		int sourceColumn = move.getSource().getColumn();
 		int targetRow = move.getTarget().getRow();
 		int targetColumn = move.getTarget().getColumn();
 		
-		Piece piece = board.getPieces()[sourceRow][sourceColumn];
-		piece.setPosition(move.getTarget());
-		board.getPieces()[sourceRow][sourceColumn] = null;
-		board.getPieces()[targetRow][targetColumn] = piece;		
+		if(getBoard().seePosition(move.getSource()) == null) {
+			throw new ChessException("Invalid movement, there is no piece in the source position" + "\nSource: " 
+		+ move.getSource() + "\nTarget: " + move.getTarget());
+		}else {		
+			ChessPiece piece = (ChessPiece)board.seePosition(sourceRow, sourceColumn);	
+			ChessPiece opponentPiece = (ChessPiece)board.seePosition(targetRow, targetColumn);
+			if(opponentPiece != null && (piece.getColor() == opponentPiece.getColor())) {
+				throw new ChessException("Invalid move, you can't capture your own piece" + "\nSource: " 
+						+ move.getSource() + "\nTarget: " + move.getTarget());
+			}else {
+				board.doChessMove(piece, targetRow, targetColumn);			
+				board.nullPosition(sourceRow, sourceColumn);
+			}		
+			
+			if(opponentPiece != null) {
+				if(turn == Turn.BLACKTURN) {
+					whitePlayer.addLostPiece(opponentPiece);
+				}else {
+					blackPlayer.addLostPiece(opponentPiece);
+				}
+			}
+		}
+	}
 	
+	public boolean check() {
 		if( 
-			( turn == Turn.WHITETURN && ChessPiece.threatenedPosition(blackPlayer.getKing().getPosition(), Color.BLACK, getBoard()) ) 
+			( ChessPiece.threatenedPosition(blackPlayer.getKing().getPosition(), Color.BLACK, getBoard()) ) 
 			||
-			( turn == Turn.BLACKTURN && ChessPiece.threatenedPosition(whitePlayer.getKing().getPosition(), Color.WHITE, getBoard()) )
+			( ChessPiece.threatenedPosition(whitePlayer.getKing().getPosition(), Color.WHITE, getBoard()) )
 			) {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean canProtectKing(ChessPlayer player) {
+		ChessBoard testBoard = new ChessBoard();
+		board.clone(testBoard);
+		King playerKing = player.getKing();
+		ChessPiece opponentPiece;
+		
+		for(ChessPiece piece: player.getNormalPieces()) {
+			if(!player.capturedPiece(piece)) {
+				for(Position move: piece.getMoves()) {							
+					
+					opponentPiece = (ChessPiece)testBoard.seePosition(move);
+					testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
+					testBoard.nullPosition(piece.getPosition());
+					
+					if(!ChessPiece.threatenedPosition(playerKing.getPosition(), playerKing.getColor(), testBoard)) {
+						return true;
+					}
+					
+					testBoard.getPieces()[piece.getPosition().getRow()][piece.getPosition().getColumn()] = piece;
+					testBoard.getPieces()[move.getRow()][move.getColumn()] = opponentPiece;
+				}
+			}
+		}
+		
+		if(!playerKing.getMoves().isEmpty()) {
+			return true;
+		}
+		
+		return false;		
+	}
+	
+	private boolean blackInCheck() {
+		King blackKing = blackPlayer.getKing();
+		if(ChessPiece.threatenedPosition(blackKing.getPosition(), blackKing.getColor(), board)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	private boolean whiteInCheck() {
+		King whiteKing = whitePlayer.getKing();
+		if(ChessPiece.threatenedPosition(whiteKing.getPosition(), whiteKing.getColor(), board)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean checkMate() {
+		if(!canProtectKing(whitePlayer) || !canProtectKing(blackPlayer)) {
+			return true;		
+		}else if( (turn == Turn.WHITETURN && blackInCheck()) || (turn == Turn.BLACKTURN && whiteInCheck()) ){
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	private void startMatch() {

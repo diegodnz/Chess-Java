@@ -14,18 +14,29 @@ public class Program {
 		Scanner sc = new Scanner(System.in);
 		ChessMatch match = new ChessMatch(); 
 		boolean check = false;
-		while(true) {
+		boolean checkMate = false;
+		ChessMove move;
+		while(!checkMate) {
 			ClearScreen.clear();
 			ChessUI.printBoard(match.getBoard());
-			ChessMove move = ChessUI.play(match, sc, check);
-			check = match.peformMove(move);
-			if(match.getTurn() == Turn.WHITETURN) {
-				match.setTurn(Turn.BLACKTURN);
-			}else {
-				match.setTurn(Turn.WHITETURN);
-			}
+			ChessUI.printCapturedPieces(match);			
+			move = ChessUI.play(match, sc, check);	
+			match.peformMove(move);
+			check = match.check();
+			match.changeTurn();
+			if(check && match.checkMate()) {
+				checkMate = true;
+			}			
 			System.out.println();
 		}		
+		ClearScreen.clear();
+		ChessUI.printBoard(match.getBoard());
+		System.out.println("\nCHECKMATE!");
+		if(match.getTurn() == Turn.BLACKTURN) {
+			System.out.println("White player won!!");
+		}else {
+			System.out.println("Black player won!!");
+		}
 		
 	}
 	

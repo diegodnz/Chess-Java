@@ -15,11 +15,11 @@ import chess.pieces.Rook;
 
 public abstract class ChessPiece extends Piece{
 	
-	protected Color color;	
+	protected Color color;		
 	
 	public ChessPiece(ChessBoard board, Position position, Color color) {
 		super(board, position);
-		this.color = color;
+		this.color = color;		
 	}
 	
 	public Color getColor() {

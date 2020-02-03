@@ -14,8 +14,8 @@ public class King extends ChessPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> getMoves() {
-		return getMoves(position, board, color);
+	public ArrayList<Position> getMoves() {		
+		return getMoves(position, board, color);		
 	}
 	
 	public ArrayList<Position> getMoves(Position position, Board board, Color color){

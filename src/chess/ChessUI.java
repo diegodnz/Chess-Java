@@ -29,6 +29,13 @@ public class ChessUI {
 		System.out.println("\n    a  b  c  d  e  f  g  h ");
 	}
 	
+	public static void printCapturedPieces(ChessMatch match) {
+		System.out.print("\nWhite captured pieces: ");
+		System.out.println(match.getWhitePlayer().getLostPieces());
+		System.out.print("Black captured pieces: ");
+		System.out.println(match.getBlackPlayer().getLostPieces());
+	}
+	
 	private static Position getEntry(Scanner sc) throws ChessException {
 		String entry = sc.next();
 		int row = Integer.valueOf(entry.substring(1));
@@ -108,9 +115,9 @@ public class ChessUI {
 			System.out.println("\nCHECK!!");
 		}
 		if(match.getTurn() == Turn.WHITETURN){
-			System.out.printf("\nPlayer1 turn!!");
+			System.out.printf("\nWhite player turn!!");
 		}else {
-			System.out.printf("\nPlayer2 turn!!");
+			System.out.printf("\nBlack player turn!!");
 		}	
 		
 		Position sourcePosition = readPosition(match, sc, "Source", null, false);		

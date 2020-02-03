@@ -10,13 +10,19 @@ public class ChessBoard extends Board{
 		super(8, 8);		
 	}
 	
-	public void nullPosition(Position position) {
-		pieces[position.getRow()][position.getColumn()] = null;
+	public void clone(ChessBoard board) {
+		int i = 0;
+		for(Piece[] line: pieces) {
+			board.pieces[i] = line.clone();
+			i++;
+		}
+	}	
+	
+	public void doChessMove(ChessPiece piece, Position position) {		
+		super.putInPosition(piece, position);	
 	}
 	
-	public void putInPosition(Piece piece, Position position) {	
-		pieces[position.getRow()][position.getColumn()] = piece;
-		piece.setPosition(position);
+	public void doChessMove(ChessPiece piece, int row, int column) {		
+		super.putInPosition(piece, row, column);		
 	}
-	
 }

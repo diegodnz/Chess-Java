@@ -10,12 +10,12 @@ import chess.ChessPiece;
 public class Bishop extends ChessPiece{
 	
 	public Bishop(ChessBoard board, Position position, Color color) {
-		super(board, position, color);		
+		super(board, position, color); 		
 	}
 	
 	@Override
-	public ArrayList<Position> getMoves() {
-		return getMoves(position, board, color);
+	public ArrayList<Position> getMoves() {		
+		return getMoves(position, board, color);		
 	}
 	
 	public static ArrayList<Position> getMoves(Position position, Board board, Color color){		

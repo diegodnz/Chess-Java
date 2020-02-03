@@ -33,17 +33,58 @@ public class Board {
 				&& position.getRow() >= 0 && position.getColumn() >= 0;
 	}
 	
-	public Piece seePosition(int row, int column) {		
-		return pieces[row][column];
+	public boolean positionInBoard(int row, int column) {
+		return row < numRows && column < numColumns
+				&& row >= 0 && column >= 0;
 	}
 	
-	public Piece seePosition(Position position) throws BoardException {
-		try {
-			return pieces[position.getRow()][position.getColumn()];
-		}
-		catch (ArrayIndexOutOfBoundsException e) {			
+	public Piece seePosition(int row, int column) {	
+		if(positionInBoard(row, column)) {
+			return pieces[row][column];
+		}else {
 			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
 		}
 	}
 	
+	public Piece seePosition(Position position) {
+		if(positionInBoard(position)) {
+			return pieces[position.getRow()][position.getColumn()];
+		}else {
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
+	}
+	
+	public void nullPosition(Position position) {
+		if(positionInBoard(position)) {
+			pieces[position.getRow()][position.getColumn()] = null;
+		}else {
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
+	}
+	
+	public void nullPosition(int row, int column) {
+		if(positionInBoard(row, column)) {
+			pieces[row][column] = null;
+		}else {
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
+	}
+	
+	public void putInPosition(Piece piece, Position position) {	
+		if(positionInBoard(position)) {
+			pieces[position.getRow()][position.getColumn()] = piece;
+			piece.setPosition(position);
+		}else {
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
+	}
+	
+	public void putInPosition(Piece piece, int row, int column) {	
+		if(positionInBoard(row, column)) {
+			pieces[row][column] = piece;
+			piece.setPosition(row, column);
+		}else {
+			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+		}
+	}
 }
