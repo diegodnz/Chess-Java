@@ -17,8 +17,8 @@ public abstract class ChessPiece extends Piece{
 	
 	protected Color color;	
 	
-	public ChessPiece(ChessBoard board, Color color) {
-		super(board);
+	public ChessPiece(ChessBoard board, Position position, Color color) {
+		super(board, position);
 		this.color = color;
 	}
 	

@@ -8,8 +8,8 @@ import chess.ChessPiece;
 
 public class Queen extends ChessPiece{
 	
-	public Queen(ChessBoard board, Color color) {
-		super(board, color);		
+	public Queen(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override
@@ -25,9 +25,9 @@ public class Queen extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "Q ";
+			return " Q ";
 		}else {
-			return "q'";
+			return " q ";
 		}
 	}
 }

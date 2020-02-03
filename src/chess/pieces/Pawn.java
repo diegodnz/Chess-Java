@@ -9,9 +9,8 @@ import chess.ChessPiece;
 
 public class Pawn extends ChessPiece{
 	
-	public Pawn(ChessBoard board, Color color) {
-		super(board, color);		
-		this.board = (ChessBoard)board;
+	public Pawn(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override 
@@ -68,9 +67,9 @@ public class Pawn extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "P ";
+			return " P ";
 		}else {
-			return "p'";
+			return " p ";
 		}
 	}
 }

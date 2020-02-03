@@ -9,8 +9,8 @@ import chess.ChessPiece;
 
 public class Bishop extends ChessPiece{
 	
-	public Bishop(ChessBoard board, Color color) {
-		super(board, color);		
+	public Bishop(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override
@@ -97,9 +97,9 @@ public class Bishop extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "B ";
+			return " B ";
 		}else {
-			return "b'";
+			return " b ";
 		}
 	}
 }

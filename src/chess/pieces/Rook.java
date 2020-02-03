@@ -9,8 +9,8 @@ import chess.ChessPiece;
 
 public class Rook extends ChessPiece{
 	
-	public Rook(ChessBoard board, Color color) {
-		super(board, color);		
+	public Rook(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override
@@ -80,9 +80,9 @@ public class Rook extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "R ";
+			return " R ";
 		}else {
-			return "r'";
+			return " r ";
 		}
 	}
 }

@@ -11,22 +11,22 @@ import board.Position;
 public class ChessUI {
 	
 	public static void printBoard(ChessBoard board) {
-		System.out.println("   a b c d e f g h\n");
+		System.out.println("    a  b  c  d  e  f  g  h \n\n");
 		for(int row = 0; row < board.getNumRows(); row++) {			
 			System.out.print(8-row + "  ");
 			
 			for(int column = 0; column < board.getNumColumns(); column++) {
 				Piece piece = board.seePosition(row, column);
 				if(piece == null) {
-					System.out.print("- ");
+					System.out.print(" - ");
 				}else {
 					System.out.print(piece);				
 				}
 			}
 			
-			System.out.println("  " + (8-row));			
+			System.out.println("  " + (8-row) + "\n");			
 		}		
-		System.out.println("\n   a b c d e f g h");
+		System.out.println("\n    a  b  c  d  e  f  g  h ");
 	}
 	
 	private static Position getEntry(Scanner sc) throws ChessException {
@@ -64,10 +64,10 @@ public class ChessUI {
 					for(Position move: possibleMoves) {
 						Piece possiblePiece = movementBoard.seePosition(move);
 						if(possiblePiece == null) {
-							movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, "* ");
+							movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, " * ");
 						}else {
 							movementBoard.getPieces()[move.getRow()][move.getColumn()] 
-									= new Piece(movementBoard, possiblePiece.toString().charAt(0) + "<");
+									= new Piece(movementBoard, "(" + possiblePiece.toString().charAt(1) + ")");
 						}
 					}
 					printBoard(movementBoard);
@@ -103,7 +103,10 @@ public class ChessUI {
 	
 	}
 	
-	public static ChessMove play(ChessMatch match, Scanner sc) {
+	public static ChessMove play(ChessMatch match, Scanner sc, boolean check) {
+		if(check) {
+			System.out.println("\nCHECK!!");
+		}
 		if(match.getTurn() == Turn.WHITETURN){
 			System.out.printf("\nPlayer1 turn!!");
 		}else {

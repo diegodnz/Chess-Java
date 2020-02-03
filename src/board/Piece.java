@@ -7,12 +7,13 @@ public class Piece {
 	protected String name;
 	
 	public Piece(Board board, String name) {
-		this.board = board;
+		this.board = board;		
 		this.name = name;
 	}
 	
-	public Piece(Board board) {
+	public Piece(Board board, Position position) {
 		this.board = board;
+		this.position = position;
 	}
 	
 	public Position getPosition() {

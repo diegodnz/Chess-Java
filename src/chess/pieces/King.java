@@ -9,8 +9,8 @@ import chess.ChessPiece;
 
 public class King extends ChessPiece{
 	
-	public King(ChessBoard board, Color color) {
-		super(board, color);		
+	public King(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override
@@ -44,9 +44,9 @@ public class King extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "K ";
+			return " K ";
 		}else {
-			return "k'";
+			return " k ";
 		}
 	}
 }

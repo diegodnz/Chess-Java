@@ -9,8 +9,8 @@ import chess.ChessPiece;
 
 public class Horse extends ChessPiece{
 	
-	public Horse(ChessBoard board, Color color) {
-		super(board, color);		
+	public Horse(ChessBoard board, Position position, Color color) {
+		super(board, position, color);		
 	}
 	
 	@Override
@@ -92,9 +92,9 @@ public class Horse extends ChessPiece{
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return "H ";
+			return " H ";
 		}else {
-			return "h'";
+			return " h ";
 		}
 	}
 }
