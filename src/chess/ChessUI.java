@@ -11,7 +11,7 @@ import board.Position;
 public class ChessUI {
 	
 	public static void printBoard(ChessBoard board) {
-		System.out.println("    a  b  c  d  e  f  g  h \n\n");
+		System.out.println("    a  b  c  d  e  f  g  h \n");
 		for(int row = 0; row < board.getNumRows(); row++) {			
 			System.out.print(8-row + "  ");
 			
@@ -24,7 +24,7 @@ public class ChessUI {
 				}
 			}
 			
-			System.out.println("  " + (8-row) + "\n");			
+			System.out.println("  " + (8-row));
 		}		
 		System.out.println("\n    a  b  c  d  e  f  g  h ");
 	}
@@ -63,7 +63,7 @@ public class ChessUI {
 				ArrayList<Position> possibleMoves = sourcePiece.getMoves();					
 				
 				if(printBoard) {
-					ClearScreen.clear();
+					//ClearScreen.clear();
 					ChessBoard movementBoard = new ChessBoard();
 					for(int i = 0; i < 8; i++) {
 						movementBoard.getPieces()[i] = match.getBoard().getPieces()[i].clone();
@@ -119,9 +119,19 @@ public class ChessUI {
 		}else {
 			System.out.printf("\nBlack player turn!!");
 		}	
-		
-		Position sourcePosition = readPosition(match, sc, "Source", null, false);		
-		Position targetPosition = readPosition(match, sc, "Target", sourcePosition, true);			
-		return new ChessMove(sourcePosition, targetPosition);		
+
+		if (match.hasBot() && match.getTurn() == match.getBotTurn()) {
+		//if (true) {
+			if (match.getTurn() == Turn.WHITETURN) {
+				return match.getWhitePlayer().aleatoryMove();
+			} else {
+				return match.getBlackPlayer().aleatoryMove();
+			}
+		} else {
+			Position sourcePosition = readPosition(match, sc, "Source", null, false);
+			System.out.println();
+			Position targetPosition = readPosition(match, sc, "Target", sourcePosition, true);
+			return new ChessMove(sourcePosition, targetPosition);
+		}
 	}
 }

@@ -9,15 +9,15 @@ import chess.Turn;
 
 public class Program {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		
 		Scanner sc = new Scanner(System.in);
-		ChessMatch match = new ChessMatch(); 
+		ChessMatch match = new ChessMatch(true, Turn.BLACKTURN);
 		boolean check = false;
 		boolean checkMate = false;
 		ChessMove move;
 		while(!checkMate) {
-			ClearScreen.clear();
+			//ClearScreen.clear();
 			ChessUI.printBoard(match.getBoard());
 			ChessUI.printCapturedPieces(match);			
 			move = ChessUI.play(match, sc, check);	
@@ -26,10 +26,11 @@ public class Program {
 			match.changeTurn();
 			if(check && match.checkMate()) {
 				checkMate = true;
-			}			
+			}
+			Thread.sleep(500);
 			System.out.println();
 		}		
-		ClearScreen.clear();
+		//ClearScreen.clear();
 		ChessUI.printBoard(match.getBoard());
 		System.out.println("\nCHECKMATE!");
 		if(match.getTurn() == Turn.BLACKTURN) {
