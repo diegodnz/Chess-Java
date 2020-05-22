@@ -12,7 +12,7 @@ public class Program {
 	public static void main(String[] args) throws InterruptedException {
 		
 		Scanner sc = new Scanner(System.in);
-		ChessMatch match = new ChessMatch(true, Turn.BLACKTURN);
+		ChessMatch match = new ChessMatch();
 		boolean check = false;
 		boolean checkMate = false;
 		ChessMove move;
@@ -20,14 +20,14 @@ public class Program {
 			//ClearScreen.clear();
 			ChessUI.printBoard(match.getBoard());
 			ChessUI.printCapturedPieces(match);			
-			move = ChessUI.play(match, sc, check);	
+			move = ChessUI.play(match, sc, check, true);
 			match.peformMove(move);
 			check = match.check();
 			match.changeTurn();
 			if(check && match.checkMate()) {
 				checkMate = true;
 			}
-			Thread.sleep(500);
+			//Thread.sleep(500);
 			System.out.println();
 		}		
 		//ClearScreen.clear();
@@ -38,7 +38,7 @@ public class Program {
 		}else {
 			System.out.println("Black player won!!");
 		}
-		
+		sc.close();
 	}
 	
 }

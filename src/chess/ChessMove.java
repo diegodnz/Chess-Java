@@ -11,6 +11,11 @@ public class ChessMove {
 		this.source = source;
 		this.target = target;	
 	}
+
+	public ChessMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn) {
+		this.source = new Position(sourceRow, sourceColumn);
+		this.target = new Position(targetRow, targetColumn);
+	}
 	
 	public Position getSource() {
 		return source;

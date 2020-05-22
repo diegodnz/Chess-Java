@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 
 public class King extends ChessPiece{
@@ -27,9 +28,9 @@ public class King extends ChessPiece{
 		for(int i = -1; i <= 1; i++) {
 			for(int j = -1; j <=1; j++) {
 				testPosition = new Position(position.getRow() + i, position.getColumn() + j);
-				if(!testPosition.equals(position) && board.positionInBoard(testPosition)) {
+				if(!(testPosition.equals(position)) && board.positionInBoard(testPosition)) {
 					possiblePiece = (ChessPiece)board.seePosition(testPosition.getRow(), testPosition.getColumn());
-					if( !threatenedPosition(testPosition, color, board) && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+					if( !(threatenedPosition(testPosition, color, board)) && (possiblePiece == null || possiblePiece.getColor() != color) ) {
 						moves.add(testPosition);
 					}
 				}
@@ -40,13 +41,24 @@ public class King extends ChessPiece{
 		
 		return moves;
 	}
-	
+
+	@Override
+	public ChessMove getProtectMove(Position kingPosition) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return " K ";
+			return "   K   ";
 		}else {
-			return " k ";
+			return "   k   ";
 		}
 	}
+
+	@Override
+	public char getLetter() {
+		return toString().trim().charAt(0);
+	}
+
 }

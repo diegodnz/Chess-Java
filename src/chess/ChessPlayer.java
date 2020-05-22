@@ -59,12 +59,12 @@ public class ChessPlayer {
 		normalPieces[index] = piece;
 	}
 
-	public ChessMove aleatoryMove() {
+	public ChessMove randomMove() {
 		ArrayList<ChessPiece> playablePieces = new ArrayList<ChessPiece>();
 		Random gen = new Random();
 
 		for (ChessPiece piece : normalPieces) {
-			if (piece != null && !piece.getMoves().isEmpty()) {
+			if (piece != null && !(piece.getMoves().isEmpty())) {
 				playablePieces.add(piece);
 			}
 		}
@@ -82,7 +82,23 @@ public class ChessPlayer {
 		Position targetMove = playPiece.getMoves().get(indexMove);
 
 		return new ChessMove(playPiece.getPosition(), targetMove);
+	}
 
+	public ChessMove protectRandomMove() {
+		ArrayList<ChessMove> protectKingMoves = new ArrayList<>();
+		Random gen = new Random();
+
+		for (ChessPiece piece : normalPieces) {
+			if (piece != null) {
+				ChessMove protectionMove = piece.getProtectMove(king.getPosition());
+				if (protectionMove != null) {
+					protectKingMoves.add(protectionMove);
+				}
+			}
+		}
+
+		int i = gen.nextInt(protectKingMoves.size());
+		return protectKingMoves.get(i);
 	}
 
 }

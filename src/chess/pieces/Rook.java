@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Rook extends ChessPiece{
@@ -76,13 +77,24 @@ public class Rook extends ChessPiece{
 		
 		return moves;
 	}
-	
+
+	@Override
+	public ChessMove getProtectMove(Position kingPosition) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return " R ";
+			return "   R   ";
 		}else {
-			return " r ";
+			return "   r   ";
 		}
 	}
+
+	@Override
+	public char getLetter() {
+		return toString().trim().charAt(0);
+	}
+
 }

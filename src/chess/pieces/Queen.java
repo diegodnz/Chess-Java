@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import board.Position;
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Queen extends ChessPiece{
@@ -21,13 +22,24 @@ public class Queen extends ChessPiece{
 		moves.addAll(rookMoves);		
 		return moves;						
 	}
-	
+
+	@Override
+	public ChessMove getProtectMove(Position kingPosition) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return " Q ";
+			return "   Q   ";
 		}else {
-			return " q ";
+			return "   q   ";
 		}
 	}
+
+	@Override
+	public char getLetter() {
+		return toString().trim().charAt(0);
+	}
+
 }

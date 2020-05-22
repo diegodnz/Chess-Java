@@ -1,6 +1,7 @@
 package chess;
 
 import board.BoardException;
+import board.Piece;
 import board.Position;
 import chess.pieces.Bishop;
 import chess.pieces.Color;
@@ -9,6 +10,9 @@ import chess.pieces.King;
 import chess.pieces.Pawn;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class ChessMatch {
 
@@ -24,6 +28,13 @@ public class ChessMatch {
 		turn = Turn.WHITETURN;
 		this.hasBot = hasBot;
 		this.botTurn = botTurn;
+		startMatch();
+	}
+
+	public ChessMatch() {
+		board = new ChessBoard();
+		turn = Turn.WHITETURN;
+		hasBot = false;
 		startMatch();
 	}
 
@@ -55,13 +66,28 @@ public class ChessMatch {
 		return blackPlayer;
 	}
 
-	public ChessPiece validPiece(Position position) throws BoardException, ChessException {
+	public ChessPiece validPiece(Position position) {
 		ChessPiece piece = (ChessPiece) board.seePosition(position);
 		if (piece == null) {
 			throw new BoardException("There is no piece in this position.");
 		} else {
 			boolean opponentPiece = (piece.getColor() == Color.BLACK && turn == Turn.WHITETURN)
 					|| (piece.getColor() == Color.WHITE && turn == Turn.BLACKTURN);
+			if (opponentPiece) {
+				throw new ChessException("This piece belongs to your opponent");
+			} else {
+				return piece;
+			}
+		}
+	}
+
+	public static ChessPiece validPiece(Position position, ChessBoard board, Color colorTurn) {
+		ChessPiece piece = (ChessPiece) board.seePosition(position);
+		if (piece == null) {
+			throw new BoardException("There is no piece in this position.");
+		} else {
+			boolean opponentPiece = (piece.getColor() == Color.BLACK && colorTurn == Color.WHITE)
+					|| (piece.getColor() == Color.WHITE && colorTurn == Color.BLACK);
 			if (opponentPiece) {
 				throw new ChessException("This piece belongs to your opponent");
 			} else {
@@ -123,6 +149,17 @@ public class ChessMatch {
 		return false;
 	}
 
+	public static boolean check(ChessPiece blackKing, ChessPiece whiteKing, ChessBoard board) {
+		if (
+				(ChessPiece.threatenedPosition(blackKing.getPosition(), Color.BLACK, board))
+						||
+						(ChessPiece.threatenedPosition(whiteKing.getPosition(), Color.WHITE, board))
+		) {
+			return true;
+		}
+		return false;
+	}
+
 	private boolean canProtectKing(ChessPlayer player) {
 		ChessBoard testBoard = new ChessBoard();
 		board.clone(testBoard);
@@ -130,9 +167,8 @@ public class ChessMatch {
 		ChessPiece opponentPiece;
 
 		for (ChessPiece piece : player.getNormalPieces()) {
-			if (!player.capturedPiece(piece)) {
+			if (piece != null) {
 				for (Position move : piece.getMoves()) {
-
 					opponentPiece = (ChessPiece) testBoard.seePosition(move);
 					testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
 					testBoard.nullPosition(piece.getPosition());
@@ -154,6 +190,47 @@ public class ChessMatch {
 		return false;
 	}
 
+	private static boolean canProtectKing(ChessPiece king, ChessBoard board) {
+		ChessBoard testBoard = new ChessBoard();
+		board.clone(testBoard);
+		ChessPiece opponentPiece;
+		ArrayList<ChessPiece> playerPieces = getNormalPieces(king, board);
+
+		for (ChessPiece piece : playerPieces) {
+			for (Position move : piece.getMoves()) {
+				opponentPiece = (ChessPiece) testBoard.seePosition(move);
+				testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
+				testBoard.nullPosition(piece.getPosition());
+
+				if (!ChessPiece.threatenedPosition(king.getPosition(), king.getColor(), testBoard)) {
+					return true;
+				}
+
+				testBoard.getPieces()[piece.getPosition().getRow()][piece.getPosition().getColumn()] = piece;
+				testBoard.getPieces()[move.getRow()][move.getColumn()] = opponentPiece;
+			}
+		}
+
+		if (!king.getMoves().isEmpty()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static ArrayList<ChessPiece> getNormalPieces(ChessPiece playerKing, ChessBoard board) {
+		ArrayList<ChessPiece> playerPieces = new ArrayList<>();
+		for (Piece[] row: board.getPieces()) {
+			for (Piece piece : row) {
+				ChessPiece chessPiece = (ChessPiece)piece;
+				if (chessPiece.getColor() == playerKing.getColor()) {
+					playerPieces.add(chessPiece);
+				}
+			}
+		}
+		return playerPieces;
+	}
+
 	private boolean blackInCheck() {
 		King blackKing = blackPlayer.getKing();
 		if (ChessPiece.threatenedPosition(blackKing.getPosition(), blackKing.getColor(), board)) {
@@ -172,10 +249,28 @@ public class ChessMatch {
 		}
 	}
 
+	public static boolean kingInCheck(ChessPiece king, ChessBoard board) {
+		if (ChessPiece.threatenedPosition(king.getPosition(), king.getColor(), board)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public boolean checkMate() {
-		if (!canProtectKing(whitePlayer) || !canProtectKing(blackPlayer)) {
+		if (!(canProtectKing(whitePlayer)) || !(canProtectKing(blackPlayer))) {
 			return true;
 		} else if ((turn == Turn.WHITETURN && blackInCheck()) || (turn == Turn.BLACKTURN && whiteInCheck())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean checkMate(ChessPiece whiteKing, ChessPiece blackKing, ChessBoard board, Color colorTurn) {
+		if (!(canProtectKing(whiteKing, board)) || !(canProtectKing(blackKing, board))) {
+			return true;
+		} else if ((colorTurn == Color.WHITE && kingInCheck(blackKing, board)) || (colorTurn == Color.BLACK && kingInCheck(whiteKing, board))) {
 			return true;
 		} else {
 			return false;

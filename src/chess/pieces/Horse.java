@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Horse extends ChessPiece{
@@ -88,13 +89,24 @@ public class Horse extends ChessPiece{
 		
 		return moves;
 	}
-	
+
+	@Override
+	public ChessMove getProtectMove(Position kingPosition) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {
-			return " H ";
+			return "   H   ";
 		}else {
-			return " h ";
+			return "   h   ";
 		}
 	}
+
+	@Override
+	public char getLetter() {
+		return toString().trim().charAt(0);
+	}
+
 }

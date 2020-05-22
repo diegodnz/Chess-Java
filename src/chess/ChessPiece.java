@@ -21,6 +21,11 @@ public abstract class ChessPiece extends Piece{
 		super(board, position);
 		this.color = color;		
 	}
+
+	public ChessPiece(ChessBoard board, int row, int column, Color color) {
+		super(board, new Position(row, column));
+		this.color = color;
+	}
 	
 	public Color getColor() {
 		return color;
@@ -53,7 +58,7 @@ public abstract class ChessPiece extends Piece{
 		//CheckDOWN
 		i = position.getRow();
 		foundPiece = false;
-		while(i > 0 && !foundPiece) {
+		while(i > 0 && !(foundPiece)) {
 			i--;
 			possiblePiece = (ChessPiece)board.seePosition(i, position.getColumn());
 			
@@ -72,7 +77,7 @@ public abstract class ChessPiece extends Piece{
 		//CheckRIGHT
 		j = position.getColumn();
 		foundPiece = false;
-		while(j < 7 && !foundPiece) {
+		while(j < 7 && !(foundPiece)) {
 			j++;
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow(), j);
 			
@@ -91,7 +96,7 @@ public abstract class ChessPiece extends Piece{
 		//CheckLEFT
 		j = position.getColumn();
 		foundPiece = false;
-		while(j > 0 && !foundPiece) {
+		while(j > 0 && !(foundPiece)) {
 			j--;
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow(), j);
 			
@@ -111,7 +116,7 @@ public abstract class ChessPiece extends Piece{
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
-		while(i < 7 && j < 7 && !foundPiece) {
+		while(i < 7 && j < 7 && !(foundPiece)) {
 			i++;
 			j++;
 			possiblePiece = (ChessPiece)board.seePosition(i, j);
@@ -136,7 +141,7 @@ public abstract class ChessPiece extends Piece{
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
-		while(i < 7 && j > 0 && !foundPiece) {
+		while(i < 7 && j > 0 && !(foundPiece)) {
 			i++;
 			j--;
 			possiblePiece = (ChessPiece)board.seePosition(i, j);
@@ -161,7 +166,7 @@ public abstract class ChessPiece extends Piece{
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
-		while(i > 0 && j < 7 && !foundPiece) {
+		while(i > 0 && j < 7 && !(foundPiece)) {
 			i--;
 			j++;
 			possiblePiece = (ChessPiece)board.seePosition(i, j);
@@ -186,7 +191,7 @@ public abstract class ChessPiece extends Piece{
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
-		while(i > 0 && j > 0 && !foundPiece) {
+		while(i > 0 && j > 0 && !(foundPiece)) {
 			i--;
 			j--;
 			possiblePiece = (ChessPiece)board.seePosition(i, j);
@@ -275,5 +280,9 @@ public abstract class ChessPiece extends Piece{
 	}
 	
 	public abstract ArrayList<Position> getMoves();
+
+	public abstract char getLetter();
+
+	public abstract ChessMove getProtectMove(Position kingPosition);
 
 }
