@@ -91,8 +91,8 @@ public class Horse extends ChessPiece{
 	}
 
 	@Override
-	public ChessMove getProtectMove(Position kingPosition) {
-		return null;
+	public  ArrayList<Position> getProtectMoves(Position kingPosition) {
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -100,13 +100,16 @@ public class Horse extends ChessPiece{
 		if(color == Color.BLACK) {
 			return "   H   ";
 		}else {
-			return "   h   ";
+			return "  (h)  ";
 		}
 	}
 
 	@Override
 	public char getLetter() {
-		return toString().trim().charAt(0);
+		if (color == Color.BLACK) {
+			return toString().trim().charAt(0);
+		} else {
+			return toString().trim().charAt(1);
+		}
 	}
-
 }

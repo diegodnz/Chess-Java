@@ -23,12 +23,12 @@ public class ChessTree {
         piecesValue.put('b', 30);
         piecesValue.put('q', 90);
         piecesValue.put('k', 900);
-        piecesValue.put('P', 10);
-        piecesValue.put('R', 50);
-        piecesValue.put('H', 30);
-        piecesValue.put('B', 30);
-        piecesValue.put('Q', 90);
-        piecesValue.put('K', 900);
+        piecesValue.put('P', -10);
+        piecesValue.put('R', -50);
+        piecesValue.put('H', -30);
+        piecesValue.put('B', -30);
+        piecesValue.put('Q', -90);
+        piecesValue.put('K', -900);
     }
 
     public static int getNodeValue(HashMap<Character, Integer> numOfPieces, Color playerColor, String nodeBoard) {
@@ -42,8 +42,9 @@ public class ChessTree {
             colorFactor = -1;
         }
 
+        int difference = 0;
         for (Character piece : piecesValue.keySet()) {
-            int difference = numOfPieces.get(piece) - nodeNumOfPieces.get(piece);
+            difference = ( numOfPieces.get(piece) - nodeNumOfPieces.get(piece) ) * piecesValue.get(piece);
             nodeValue -= difference * colorFactor;
         }
 
@@ -142,9 +143,11 @@ public class ChessTree {
             for (Piece piece: row) {
                 if (piece != null) {
                     if (playerColor == ((ChessPiece) piece).getColor()) {
-                        ChessMove protectMove = ((ChessPiece) piece).getProtectMove(king.getPosition());
-                        if (protectMove != null) {
-                            adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), protectMove.getTarget()));
+                        ArrayList<Position> protectMoves = ((ChessPiece) piece).getProtectMoves(king.getPosition());
+                        if (!protectMoves.isEmpty()) {
+                            for (Position move : protectMoves) {
+                                adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), move));
+                            }
                         }
                     }
                 }

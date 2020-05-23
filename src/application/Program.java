@@ -15,9 +15,9 @@ public class Program {
 	
 	public static void main(String[] args) throws InterruptedException {
 
-		/*
+
 		Scanner sc = new Scanner(System.in);
-		ChessMatch match = new ChessMatch();
+		ChessMatch match = new ChessMatch(true, Turn.BLACKTURN, true);
 		boolean check = false;
 		boolean checkMate = false;
 		ChessMove move;
@@ -29,8 +29,11 @@ public class Program {
 			match.peformMove(move);
 			check = match.check();
 			match.changeTurn();
-			if(check && match.checkMate()) {
+			if (check && match.checkMate()) {
 				checkMate = true;
+			}
+			if (check) {
+				match.turnOffBots();
 			}
 			//Thread.sleep(500);
 			System.out.println();
@@ -45,10 +48,13 @@ public class Program {
 		}
 		sc.close();
 
-		*/
+
+		/*
 		GameTree gameTree = new GameTree(Game.CHESS);
 		gameTree.buildTree("RHBQKBHRPPPPPPPP00000000000000000000000000000000pppppppprhbqkbhr", 5, Color.WHITE);
 		System.out.println(gameTree);
+
+		 */
 	}
 	
 }

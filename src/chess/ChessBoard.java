@@ -140,4 +140,20 @@ public class ChessBoard extends Board{
 			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
 		}
 	}
+
+	@Override
+	public String toString() {
+		String boardString = "";
+		for (Piece[] row: pieces) {
+			for (Piece piece: row) {
+				if (piece != null) {
+					boardString += ((ChessPiece)piece).getLetter();
+				} else {
+					boardString += '0';
+				}
+			}
+		}
+		return boardString;
+	}
+
 }

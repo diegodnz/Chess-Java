@@ -7,6 +7,8 @@ import application.ClearScreen;
 import board.BoardException;
 import board.Piece;
 import board.Position;
+import chess.pieces.Color;
+import chess.pieces.King;
 
 public class ChessUI {
 
@@ -33,8 +35,10 @@ public class ChessUI {
 
 	public static void printBoard(ChessBoard board) {
 		System.out.println("         a      b      c      d      e      f      g      h \n\n");
+		System.out.println("     __________________________________________________________");
+		System.out.println("    |                                                          |");
 		for(int row = 0; row < board.getNumRows(); row++) {
-			System.out.print(8-row + "     ");
+			System.out.print(8-row + "   | ");
 
 			for(int column = 0; column < board.getNumColumns(); column++) {
 				Piece piece = board.seePosition(row, column);
@@ -45,8 +49,10 @@ public class ChessUI {
 				}
 			}
 
-			System.out.println("      " + (8-row) + "\n\n");
+			System.out.println(" |    " + (8-row));
+			System.out.println("    |                                                          |");
 		}
+		System.out.println("     __________________________________________________________");
 		System.out.println("\n         a      b      c      d      e      f      g      h \n");
 	}
 	
@@ -57,8 +63,11 @@ public class ChessUI {
 		System.out.println(match.getBlackPlayer().getLostPieces());
 	}
 	
-	private static Position getEntry(Scanner sc) throws ChessException {
+	private static Position getEntry(Scanner sc, String entryType) throws ChessException {
 		String entry = sc.next();
+		if (entryType.matches("Target") && entry.matches("0")) {
+			return null; //Player want to move other piece
+		}
 		int row = Integer.valueOf(entry.substring(1));
 		char column = entry.charAt(0);
 		ChessPosition chessPosition = new ChessPosition(row, column);
@@ -80,7 +89,7 @@ public class ChessUI {
 			Position position;
 			if (type.matches("Source")) {
 				System.out.print("\nEnter the source position: ");
-				position = getEntry(sc);
+				position = getEntry(sc, type);
 				ChessPiece sourcePiece = match.validPiece(position);
 
 				ChessPlayer player = getTurnPlayer(match);
@@ -89,7 +98,11 @@ public class ChessUI {
 					if (possibleMoves.isEmpty()) {
 						throw new ChessException("There are no movements to do with this piece.");
 					}
-				} else if (sourcePiece.getProtectMove(player.getKing().getPosition()) == null) {
+				} else if (sourcePiece instanceof King) {
+					if (sourcePiece.getMoves().isEmpty()) {
+						throw new ChessException("The king can't move to a safe position, choose a piece that can protect him");
+					}
+				} else if (sourcePiece.getProtectMoves(player.getKing().getPosition()).isEmpty()) {
 					throw new ChessException("This piece can't protect the king!!");
 				}
 			} else { //type = Target
@@ -100,7 +113,10 @@ public class ChessUI {
 					possibleMoves = sourcePiece.getMoves();
 				} else {
 					possibleMoves = new ArrayList<>();
-					possibleMoves.add(sourcePiece.getProtectMove(player.getKing().getPosition()).getTarget());
+					ArrayList<Position> protectMoves = sourcePiece.getProtectMoves(player.getKing().getPosition());
+					for (Position move: protectMoves) {
+						possibleMoves.add(move);
+					}
 				}
 
 				if (printBoard) {
@@ -115,7 +131,7 @@ public class ChessUI {
 							movementBoard.getPieces()[move.getRow()][move.getColumn()] = new Piece(movementBoard, "   *   ");
 						} else {
 							movementBoard.getPieces()[move.getRow()][move.getColumn()]
-									= new Piece(movementBoard, "  (" + ((ChessPiece) possiblePiece).getLetter() + ")  ");
+									= new Piece(movementBoard, "  *" + ((ChessPiece) possiblePiece).getLetter() + "*  ");
 						}
 					}
 					printBoard(movementBoard);
@@ -125,11 +141,14 @@ public class ChessUI {
 				for (Position move : possibleMoves) {
 					System.out.print(ChessPosition.toChessPosition(move) + " ");
 				}
-
+				System.out.print("\nEnter '0' to choose other piece");
 				System.out.print("\nEnter the target position: ");
-				position = getEntry(sc);
-
-				if (!possibleMoves.contains(position)) {
+				position = getEntry(sc, type);
+				if (position == null) {
+					System.out.println();
+					ChessUI.printBoard(match.getBoard());
+					return null;
+				} else if (!possibleMoves.contains(position)) {
 					throw new ChessException("This is not a valid move with the selected piece");
 				}
 			}
@@ -159,25 +178,36 @@ public class ChessUI {
 			}
 		}
 
-		if (match.hasBot() && match.getTurn() == match.getBotTurn()) {
-			//if (true) {
+		//if (match.hasBot() && match.getTurn() == match.getBotTurn()) {
+		if (match.hasBot()) { //Debug
 			if (match.getTurn() == Turn.WHITETURN) {
-				if (check) {
-					return match.getWhitePlayer().protectRandomMove();
+				if (match.isRandomBot()) {
+					if (check) {
+						return match.getWhitePlayer().protectRandomMove();
+					} else {
+						return match.getWhitePlayer().randomMove();
+					}
 				} else {
-					return match.getWhitePlayer().randomMove();
+					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString(), Color.WHITE);
 				}
 			} else {
-				if (check) {
-					return match.getBlackPlayer().protectRandomMove();
+				if (match.isRandomBot()) {
+					if (check) {
+						return match.getBlackPlayer().protectRandomMove();
+					} else {
+						return match.getBlackPlayer().randomMove();
+					}
 				} else {
-					return match.getBlackPlayer().randomMove();
+					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString(), Color.BLACK);
 				}
 			}
 		} else {
 			Position sourcePosition = readMove(match, sc, "Source", check, null, false);
 			System.out.println();
 			Position targetPosition = readMove(match, sc, "Target", check, sourcePosition, true);
+			if (targetPosition == null) {
+				return play(match, sc, check, printUI);
+			}
 			return new ChessMove(sourcePosition, targetPosition);
 		}
 

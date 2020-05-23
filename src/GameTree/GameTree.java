@@ -9,12 +9,14 @@ import java.util.HashMap;
 public class GameTree {
 
     private HashMap<Node, HashMap<Node, Integer>> tree;
+    private HashMap<String, Node> stringToNode;
     private HashMap<Node, Node> maxAdjacent;
     private HashMap<Node, Node> minAdjacent;
     private Game game;
 
     public GameTree(Game game) {
         tree = new HashMap<>();
+        stringToNode = new HashMap<>();
         maxAdjacent = new HashMap<>();
         minAdjacent = new HashMap<>();
         this.game = game;
@@ -25,9 +27,12 @@ public class GameTree {
         return String.format("%d %s", tree.size(), tree.get(tree.keySet().toArray()[0]));
     }
 
+    public Node getBoardNode(String board) { return stringToNode.get(board); }
+
     private void linkNodes(Node parent, Node child) {
         if (!tree.containsKey(parent)) {
             tree.put(parent, new HashMap<Node, Integer>());
+            stringToNode.put(parent.getRepresantation(), parent);
             maxAdjacent.put(parent, child);
             minAdjacent.put(parent, child);
         } else {
@@ -57,14 +62,13 @@ public class GameTree {
             if (game == Game.CHESS) {
                 ArrayList<String> adjacents = ChessTree.getAdjacents(boardNode.getRepresantation(), turnColor);
                 if (adjacents.isEmpty()) {
-                    Node checkMateNode = new Node("CheckMate");
+                    int checkMate;
                     if (startingColor == turnColor) {
-                        checkMateNode.setValue(Integer.MIN_VALUE);
+                        checkMate = Integer.MIN_VALUE;
                     } else {
-                        checkMateNode.setValue(Integer.MAX_VALUE);
+                        checkMate = (Integer.MAX_VALUE);
                     }
-                    linkNodes(boardNode, checkMateNode);
-                    boardNode.setValue(checkMateNode.getValue());
+                    boardNode.setValue(checkMate);
                 } else {
                     for (String adjacent : adjacents) {
                         Node adjacentNode = new Node(adjacent);
@@ -93,6 +97,11 @@ public class GameTree {
             color = Color.BLACK;
         }
         return color;
+    }
+
+    public String miniMax(Node board) {
+        System.out.println(tree.get(board).get(maxAdjacent.get(board)));
+        return maxAdjacent.get(board).getRepresantation();
     }
 
 }

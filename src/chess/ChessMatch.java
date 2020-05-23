@@ -22,12 +22,14 @@ public class ChessMatch {
 	private ChessPlayer blackPlayer;
 	private boolean hasBot;
 	private Turn botTurn;
+	private boolean randomBot;
 
-	public ChessMatch(boolean hasBot, Turn botTurn) {
+	public ChessMatch(boolean hasBot, Turn botTurn, boolean randomBot) {
 		board = new ChessBoard();
 		turn = Turn.WHITETURN;
 		this.hasBot = hasBot;
 		this.botTurn = botTurn;
+		this.randomBot = randomBot;
 		startMatch();
 	}
 
@@ -37,6 +39,8 @@ public class ChessMatch {
 		hasBot = false;
 		startMatch();
 	}
+
+	public boolean isRandomBot() { return randomBot; }
 
 	public ChessBoard getBoard() {
 		return board;
@@ -64,6 +68,12 @@ public class ChessMatch {
 
 	public ChessPlayer getBlackPlayer() {
 		return blackPlayer;
+	}
+
+	public void turnOffBots() {
+		hasBot = false;
+		randomBot = false;
+		botTurn = null;
 	}
 
 	public ChessPiece validPiece(Position position) {
@@ -113,6 +123,7 @@ public class ChessMatch {
 	}
 
 	public void peformMove(ChessMove move) {
+		//System.out.println(move.getSource().getRow() + " " + move.getSource().getColumn() + "  " + move.getTarget().getRow() + " " + move.getTarget().getColumn());
 		int sourceRow = move.getSource().getRow();
 		int sourceColumn = move.getSource().getColumn();
 		int targetRow = move.getTarget().getRow();
@@ -125,8 +136,8 @@ public class ChessMatch {
 			ChessPiece piece = (ChessPiece) board.seePosition(sourceRow, sourceColumn);
 			ChessPiece opponentPiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
 
-			board.doChessMove(piece, targetRow, targetColumn);
 			board.nullPosition(sourceRow, sourceColumn);
+			board.doChessMove(piece, targetRow, targetColumn);
 
 			if (opponentPiece != null) {
 				if (turn == Turn.BLACKTURN) {

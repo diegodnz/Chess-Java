@@ -283,6 +283,6 @@ public abstract class ChessPiece extends Piece{
 
 	public abstract char getLetter();
 
-	public abstract ChessMove getProtectMove(Position kingPosition);
+	public abstract ArrayList<Position> getProtectMoves(Position kingPosition);
 
 }
