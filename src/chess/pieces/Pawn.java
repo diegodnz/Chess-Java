@@ -81,7 +81,6 @@ public class Pawn extends ChessPiece {
 		}
 
 		if (canStepFoward) {
-			System.out.println("Can Step");
 			int targetRow;
 			int targetColumn;
 			( (ChessBoard)board ).nullPosition(position);

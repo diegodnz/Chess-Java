@@ -222,9 +222,11 @@ public class ChessMatch {
 		ArrayList<ChessPiece> playerPieces = new ArrayList<>();
 		for (Piece[] row: board.getPieces()) {
 			for (Piece piece : row) {
-				ChessPiece chessPiece = (ChessPiece)piece;
-				if (chessPiece.getColor() == playerKing.getColor()) {
-					playerPieces.add(chessPiece);
+				if (piece != null) {
+					ChessPiece chessPiece = (ChessPiece) piece;
+					if (chessPiece.getColor() == playerKing.getColor()) {
+						playerPieces.add(chessPiece);
+					}
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import board.BoardException;
 import board.Piece;
 import board.Position;
 import chess.pieces.Color;
+import chess.pieces.King;
 
 import java.util.ArrayList;
 
@@ -12,9 +13,13 @@ public class ChessBoard extends Board{
 
 	private ChessPiece whiteKing = null;
 	private ChessPiece blackKing = null;
+	private ChessPiece[] whitePieces;
+	private ChessPiece[] blackPieces;
 
 	public ChessBoard() {
 		super(8, 8);
+		whitePieces = new ChessPiece[16];
+		blackPieces = new ChessPiece[16];
 	}
 
 	public ChessPiece getWhiteKing() {
@@ -23,6 +28,14 @@ public class ChessBoard extends Board{
 
 	public ChessPiece getBlackKing() {
 		return blackKing;
+	}
+
+	public ChessPiece[] getWhitePieces() {
+		return whitePieces;
+	}
+
+	public ChessPiece[] getBlackPieces() {
+		return blackPieces;
 	}
 
 	public void clone(ChessBoard board) {
@@ -43,18 +56,18 @@ public class ChessBoard extends Board{
 
 	public void putInPosition(ChessPiece piece, Position position) {
 		if (positionInBoard(position)) {
-			if ( piece.getLetter() == 'K' ) {
-				if (piece.getColor() == Color.WHITE) {
-					if (whiteKing != null) {
-						throw new ChessException("There is already a white king on the board");
-					} else {
-						whiteKing = piece;
-					}
-				} else if (piece.getColor() == Color.BLACK) {
+			if (piece instanceof  King) {
+				if (piece.getColor() == Color.BLACK) {
 					if (blackKing != null) {
 						throw new ChessException("There is already a black king on the board");
 					} else {
 						blackKing = piece;
+					}
+				} else {
+					if (whiteKing != null) {
+						throw new ChessException("There is already a white king on the board");
+					} else {
+						whiteKing = piece;
 					}
 				}
 			}
@@ -67,18 +80,18 @@ public class ChessBoard extends Board{
 
 	public void putInPosition(ChessPiece piece, int row, int column) {
 		if (positionInBoard(row, column)) {
-			if ( piece.getLetter() == 'K' ) {
-				if (piece.getColor() == Color.WHITE) {
-					if (whiteKing != null) {
-						throw new ChessException("There is already a white king on the board");
-					} else {
-						whiteKing = piece;
-					}
-				} else if (piece.getColor() == Color.BLACK) {
+			if (piece instanceof  King) {
+				if (piece.getColor() == Color.BLACK) {
 					if (blackKing != null) {
 						throw new ChessException("There is already a black king on the board");
 					} else {
 						blackKing = piece;
+					}
+				} else {
+					if (whiteKing != null) {
+						throw new ChessException("There is already a white king on the board");
+					} else {
+						whiteKing = piece;
 					}
 				}
 			}

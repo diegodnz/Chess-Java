@@ -2,15 +2,20 @@ package application;
 
 import java.util.Scanner;
 
+import GameTree.GameTree;
+import GameTree.Game;
+import GameTree.ChessTree;
 import chess.ChessMatch;
 import chess.ChessMove;
 import chess.ChessUI;
 import chess.Turn;
+import chess.pieces.Color;
 
 public class Program {
 	
 	public static void main(String[] args) throws InterruptedException {
-		
+
+		/*
 		Scanner sc = new Scanner(System.in);
 		ChessMatch match = new ChessMatch();
 		boolean check = false;
@@ -39,6 +44,11 @@ public class Program {
 			System.out.println("Black player won!!");
 		}
 		sc.close();
+
+		*/
+		GameTree gameTree = new GameTree(Game.CHESS);
+		gameTree.buildTree("RHBQKBHRPPPPPPPP00000000000000000000000000000000pppppppprhbqkbhr", 5, Color.WHITE);
+		System.out.println(gameTree);
 	}
 	
 }

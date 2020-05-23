@@ -4,17 +4,79 @@ import board.Piece;
 import board.Position;
 import chess.ChessBoard;
 import chess.ChessMatch;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.pieces.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChessTree {
 
+    private static HashMap<Character, Integer> piecesValue;
+
+    public static void InitPiecesValues() {
+        piecesValue = new HashMap<>();
+        piecesValue.put('p', 10);
+        piecesValue.put('r', 50);
+        piecesValue.put('h', 30);
+        piecesValue.put('b', 30);
+        piecesValue.put('q', 90);
+        piecesValue.put('k', 900);
+        piecesValue.put('P', 10);
+        piecesValue.put('R', 50);
+        piecesValue.put('H', 30);
+        piecesValue.put('B', 30);
+        piecesValue.put('Q', 90);
+        piecesValue.put('K', 900);
+    }
+
+    public static int getNodeValue(HashMap<Character, Integer> numOfPieces, Color playerColor, String nodeBoard) {
+        int nodeValue = 0;
+        HashMap<Character, Integer> nodeNumOfPieces = getNumOfPieces(nodeBoard);
+
+        int colorFactor;
+        if (playerColor == Color.WHITE) {
+            colorFactor = 1;
+        } else {
+            colorFactor = -1;
+        }
+
+        for (Character piece : piecesValue.keySet()) {
+            int difference = numOfPieces.get(piece) - nodeNumOfPieces.get(piece);
+            nodeValue -= difference * colorFactor;
+        }
+
+        return nodeValue;
+    }
+
+    public static HashMap<Character, Integer> getNumOfPieces(String board) {
+        HashMap<Character, Integer> numOfPieces = new HashMap<>();
+        numOfPieces.put('p', 0);
+        numOfPieces.put('r', 0);
+        numOfPieces.put('h', 0);
+        numOfPieces.put('b', 0);
+        numOfPieces.put('q', 0);
+        numOfPieces.put('k', 0);
+        numOfPieces.put('P', 0);
+        numOfPieces.put('R', 0);
+        numOfPieces.put('H', 0);
+        numOfPieces.put('B', 0);
+        numOfPieces.put('Q', 0);
+        numOfPieces.put('K', 0);
+        for (int i = 0; i < board.length(); i++) {
+            char piece = board.charAt(i);
+            if (piece != '0') {
+                numOfPieces.replace(piece, numOfPieces.get(piece) + 1);
+            }
+        }
+        return numOfPieces;
+    }
+
     public static ArrayList<String> getAdjacents(String boardString, Color playerColor) {        
         ChessBoard board = new ChessBoard();
-        ChessPiece whiteKing = null;
-        ChessPiece blackKing = null;
+        King whiteKing = null;
+        King blackKing = null;
         int stringIndex;
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
@@ -52,28 +114,45 @@ public class ChessTree {
         }
 
         ArrayList<String> adjacents = new ArrayList<>();
-        if (ChessMatch.checkMate(whiteKing, blackKing, board, playerColor)) {
-            adjacents.add("CheckMate");
-            return adjacents;
-        } else if (ChessMatch.kingInCheck(whiteKing, board)) {
-
-        }
-        Piece[][] pieces = board.getPieces();
-        for (Piece[] row : pieces) {
-            for (Piece piece: row) {
-                if (playerColor ==  ((ChessPiece)piece).getColor()) {
-                    ArrayList<Position> moves = ((ChessPiece)piece).getMoves();
-                    for (Position movePosition: moves) { 
-                        adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
+        if (ChessMatch.check(blackKing, whiteKing, board) && ChessMatch.checkMate(whiteKing, blackKing, board, playerColor)) {
+            return adjacents; //CheckMate returns empty adjacents
+        } else if (playerColor == Color.WHITE && ChessMatch.kingInCheck(whiteKing, board)) {
+            getProtectMove(board, boardString, playerColor, adjacents, whiteKing);
+        } else if (playerColor == Color.BLACK && ChessMatch.kingInCheck(blackKing, board)) {
+            getProtectMove(board, boardString, playerColor, adjacents, blackKing);
+        } else {
+            Piece[][] pieces = board.getPieces();
+            for (Piece[] row : pieces) {
+                for (Piece piece: row) {
+                    if (piece != null && playerColor ==  ((ChessPiece)piece).getColor()) {
+                        ArrayList<Position> moves = ((ChessPiece)piece).getMoves();
+                        for (Position movePosition: moves) {
+                            adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
+                        }
                     }
                 }
             }
         }
-        
         return adjacents;        
     }
 
-    public static String getMoveRepresentation(String boardString, Piece movedPiece, Position sourcePosition, Position targetPosition) {
+    private static void getProtectMove(ChessBoard board, String boardString, Color playerColor, ArrayList<String> adjacents, King king) {
+        Piece[][] pieces = board.getPieces();
+        for (Piece[] row : pieces) {
+            for (Piece piece: row) {
+                if (piece != null) {
+                    if (playerColor == ((ChessPiece) piece).getColor()) {
+                        ChessMove protectMove = ((ChessPiece) piece).getProtectMove(king.getPosition());
+                        if (protectMove != null) {
+                            adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), protectMove.getTarget()));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static String getMoveRepresentation(String boardString, Piece movedPiece, Position sourcePosition, Position targetPosition) {
         StringBuilder moveString = new StringBuilder();
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {

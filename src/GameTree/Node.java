@@ -9,10 +9,16 @@ public class Node {
         this.represantation = represantation;
     }
 
-    public String getRepresantation() { return represantation; }
+    public String getRepresantation() {
+        return represantation;
+    }
 
-    public Integer getValue() { return value; }
+    public Integer getValue() {
+        return value;
+    }
 
-    public void setValue(Integer value) { this.value = value; }
+    public void setValue(Integer value) {
+        this.value = value;
+    }
 
 }
