@@ -67,7 +67,7 @@ public class ChessPlayer {
 		Random gen = new Random();
 
 		for (ChessPiece piece : normalPieces) {
-			if (piece != null && !(piece.getMoves().isEmpty())) {
+			if (piece != null && !(piece.getMoves(king.getPosition()).isEmpty())) {
 				playablePieces.add(piece);
 			}
 		}
@@ -76,13 +76,11 @@ public class ChessPlayer {
 			playablePieces.add(king);
 		}
 
-		System.out.println(playablePieces);
-
 		int indexPiece = gen.nextInt(playablePieces.size());
 		ChessPiece playPiece = playablePieces.get(indexPiece);
 
-		int indexMove = gen.nextInt(playPiece.getMoves().size());
-		Position targetMove = playPiece.getMoves().get(indexMove);
+		int indexMove = gen.nextInt(playPiece.getMoves(king.getPosition()).size());
+		Position targetMove = playPiece.getMoves(king.getPosition()).get(indexMove);
 
 		return new ChessMove(playPiece.getPosition(), targetMove);
 	}

@@ -15,12 +15,12 @@ public class Rook extends ChessPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> getMoves() {		
-		return getMoves(position, board, color);		
+	public ArrayList<Position> getMoves(Position kingPosition) {
+		return getMoves(position, board, color, kingPosition);
 	}
-	
-	public static ArrayList<Position> getMoves(Position position, Board board, Color color){
-		ArrayList<Position> moves = new ArrayList<Position>();
+
+	public static ArrayList<Position> getMoves(Position position, Board board, Color color, Position kingPosition) {
+		ArrayList<Position> moves = new ArrayList<>();
 		ChessPiece possiblePiece;
 		
 		//UP
@@ -80,28 +80,28 @@ public class Rook extends ChessPiece{
 
 	@Override
 	public ArrayList<Position> getProtectMoves(Position kingPosition) {
-		ArrayList<Position> moves = new ArrayList<Position>();
+		ArrayList<Position> moves = new ArrayList<>();
 		ChessPiece possiblePiece;
-		((ChessBoard) board).nullPosition(this.position);
+		board.nullPosition(this.position);
 		int targetRow;
 		int targetColumn;
 
 		//UP
-		targetColumn = position.getColumn();
 		for (int i = position.getRow(); i > 0; i--) {
 			targetRow = i - 1;
-			possiblePiece = (ChessPiece) board.seePosition(i - 1, position.getColumn());
-			((ChessBoard) board).putInPosition(new Rook((ChessBoard) board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
+			targetColumn = position.getColumn();
+			possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
+			board.putInPosition(new Rook((ChessBoard) board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
 			boolean canProtectKing = !ChessPiece.threatenedPosition(kingPosition, color, board);
 			if (possiblePiece == null) {
 				if (canProtectKing) {
-					((ChessBoard) board).putInPosition(this, position);
-					return moves;
+					moves.add(new Position(targetRow, targetColumn));
 				}
+				board.nullPosition(targetRow, targetColumn);
 			} else {
-				if (canProtectKing) {
-					((ChessBoard) board).putInPosition(this, position);
-					((ChessBoard) board).putInPosition(possiblePiece, possiblePiece.getPosition());
+				board.putInPosition(possiblePiece, possiblePiece.getPosition());
+				if (possiblePiece.getColor() != color && canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
 				}
 				break;
 			}
@@ -109,44 +109,68 @@ public class Rook extends ChessPiece{
 
 		//DOWN
 		for (int i = position.getRow(); i < 7; i++) {
-			possiblePiece = (ChessPiece) board.seePosition(i + 1, position.getColumn());
+			targetRow = i + 1;
+			targetColumn = position.getColumn();
+			possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
+			board.putInPosition(new Rook((ChessBoard) board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
+			boolean canProtectKing = !ChessPiece.threatenedPosition(kingPosition, color, board);
 			if (possiblePiece == null) {
-				moves.add(new Position(i + 1, position.getColumn()));
+				if (canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
+				}
+				board.nullPosition(targetRow, targetColumn);
 			} else {
-				if (possiblePiece.getColor() != color) {
-					moves.add(new Position(i + 1, position.getColumn()));
+				board.putInPosition(possiblePiece, possiblePiece.getPosition());
+				if (possiblePiece.getColor() != color && canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
 				}
 				break;
 			}
 		}
 
 		//RIGHT
-		for (int i = position.getColumn(); i < 7; i++) {
-			possiblePiece = (ChessPiece) board.seePosition(position.getRow(), i + 1);
+		for (int j = position.getColumn(); j < 7; j++) {
+			targetRow = position.getRow();
+			targetColumn = j + 1;
+			possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
+			board.putInPosition(new Rook((ChessBoard) board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
+			boolean canProtectKing = !ChessPiece.threatenedPosition(kingPosition, color, board);
 			if (possiblePiece == null) {
-				moves.add(new Position(position.getRow(), i + 1));
+				if (canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
+				}
+				board.nullPosition(targetRow, targetColumn);
 			} else {
-				if (possiblePiece.getColor() != color) {
-					moves.add(new Position(position.getRow(), i + 1));
+				board.putInPosition(possiblePiece, possiblePiece.getPosition());
+				if (possiblePiece.getColor() != color && canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
 				}
 				break;
 			}
 		}
 
 		//LEFT
-		for (int i = position.getColumn(); i > 0; i--) {
-			possiblePiece = (ChessPiece) board.seePosition(position.getRow(), i - 1);
+		for (int j = position.getColumn(); j > 0; j--) {
+			targetRow = position.getRow();
+			targetColumn = j - 1;
+			possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
+			board.putInPosition(new Rook((ChessBoard) board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
+			boolean canProtectKing = !ChessPiece.threatenedPosition(kingPosition, color, board);
 			if (possiblePiece == null) {
-				moves.add(new Position(position.getRow(), i - 1));
+				if (canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
+				}
+				board.nullPosition(targetRow, targetColumn);
 			} else {
-				if (possiblePiece.getColor() != color) {
-					moves.add(new Position(position.getRow(), i - 1));
+				board.putInPosition(possiblePiece, possiblePiece.getPosition());
+				if (possiblePiece.getColor() != color && canProtectKing) {
+					moves.add(new Position(targetRow, targetColumn));
 				}
 				break;
 			}
 		}
 
-		((ChessBoard) board).putInPosition(this, position);
+		board.putInPosition(this, position);
 		return moves;
 	}
 

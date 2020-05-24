@@ -13,17 +13,17 @@ public class King extends ChessPiece{
 	public King(ChessBoard board, Position position, Color color) {
 		super(board, position, color);		
 	}
-	
+
 	@Override
-	public ArrayList<Position> getMoves() {		
-		return getMoves(position, board, color);		
+	public ArrayList<Position> getMoves(Position kingPosition) {
+		return getMoves();
 	}
-	
-	public ArrayList<Position> getMoves(Position position, Board board, Color color) {
+
+	public ArrayList<Position> getMoves() {
 		ArrayList<Position> moves = new ArrayList<Position>();
 		ChessPiece possiblePiece;
 		Position testPosition;
-		((ChessBoard) board).nullPosition(position);
+		board.nullPosition(position);
 
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
@@ -37,14 +37,14 @@ public class King extends ChessPiece{
 			}
 		}
 
-		((ChessBoard) board).putInPosition(this, position);
+		board.putInPosition(this, position);
 
 		return moves;
 	}
 
 	@Override
 	public ArrayList<Position> getProtectMoves(Position kingPosition) {
-		return getMoves(position, board, color);
+		return getMoves();
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package board;
 
 import chess.ChessPiece;
 
-public class Board {
+public abstract class Board {
 
 	private int numRows;
 	private int numColumns;
@@ -48,7 +48,7 @@ public class Board {
 		if (positionInBoard(row, column)) {
 			return pieces[row][column];
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
@@ -56,8 +56,17 @@ public class Board {
 		if (positionInBoard(position)) {
 			return pieces[position.getRow()][position.getColumn()];
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
+	protected abstract String invalidPositionMsg();
+
+	public abstract void nullPosition(Position position);
+
+	public abstract void nullPosition(int row, int column);
+
+	public abstract void putInPosition(ChessPiece piece, Position position);
+
+	public abstract void putInPosition(ChessPiece piece, int row, int column);
 }

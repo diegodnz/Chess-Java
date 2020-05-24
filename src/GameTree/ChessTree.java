@@ -126,7 +126,12 @@ public class ChessTree {
             for (Piece[] row : pieces) {
                 for (Piece piece: row) {
                     if (piece != null && playerColor ==  ((ChessPiece)piece).getColor()) {
-                        ArrayList<Position> moves = ((ChessPiece)piece).getMoves();
+                        ArrayList<Position> moves;
+                        if (((ChessPiece) piece).getColor() == Color.WHITE) {
+                            moves = ((ChessPiece) piece).getMoves(whiteKing.getPosition());
+                        } else {
+                            moves = ((ChessPiece) piece).getMoves(blackKing.getPosition());
+                        }
                         for (Position movePosition: moves) {
                             adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
                         }

@@ -54,6 +54,7 @@ public class ChessBoard extends Board{
 		putInPosition(piece, row, column);
 	}
 
+	@Override
 	public void putInPosition(ChessPiece piece, Position position) {
 		if (positionInBoard(position)) {
 			if (piece instanceof  King) {
@@ -74,10 +75,11 @@ public class ChessBoard extends Board{
 			pieces[position.getRow()][position.getColumn()] = piece;
 			piece.setPosition(position);
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
+	@Override
 	public void putInPosition(ChessPiece piece, int row, int column) {
 		if (positionInBoard(row, column)) {
 			if (piece instanceof  King) {
@@ -98,11 +100,11 @@ public class ChessBoard extends Board{
 			pieces[row][column] = piece;
 			piece.setPosition(row, column);
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
-
+	@Override
 	public void nullPosition(Position position) {
 		if (positionInBoard(position)) {
 			Piece piece = pieces[position.getRow()][position.getColumn()];
@@ -118,10 +120,11 @@ public class ChessBoard extends Board{
 				throw new BoardException("This position is already null");
 			}
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
+	@Override
 	public void nullPosition(int row, int column) {
 		if (positionInBoard(row, column)) {
 			Piece piece = pieces[row][column];
@@ -137,7 +140,7 @@ public class ChessBoard extends Board{
 				throw new BoardException("This position is already null");
 			}
 		} else {
-			throw new BoardException("Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n");
+			throw new BoardException(invalidPositionMsg());
 		}
 	}
 
@@ -155,5 +158,8 @@ public class ChessBoard extends Board{
 		}
 		return boardString;
 	}
+
+	@Override
+	protected String invalidPositionMsg() { return "Invalid position. Valid positions -> (a1, a2, ..., h7, h8)\n"; }
 
 }

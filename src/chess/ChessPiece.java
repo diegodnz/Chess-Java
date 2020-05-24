@@ -112,7 +112,7 @@ public abstract class ChessPiece extends Piece{
 			
 		}
 		
-		//Check-UP-RIGHT
+		//Check-DOWN-RIGHT
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
@@ -128,7 +128,7 @@ public abstract class ChessPiece extends Piece{
 								(
 								(i - 1 == position.getRow() && j - 1 == position.getColumn()) 
 								&&
-								(possiblePiece instanceof Pawn || possiblePiece instanceof King)
+								( (possiblePiece instanceof Pawn && possiblePiece.getColor() == Color.WHITE) || possiblePiece instanceof King)
 								);
 				if(opponentPiece && dangerPiece) {
 					return true;
@@ -137,7 +137,7 @@ public abstract class ChessPiece extends Piece{
 			
 		}
 		
-		//Check-UP-LEFT
+		//Check-DOWN-LEFT
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
@@ -153,7 +153,7 @@ public abstract class ChessPiece extends Piece{
 								(
 								(i - 1 == position.getRow() && j + 1 == position.getColumn()) 
 								&&
-								(possiblePiece instanceof Pawn || possiblePiece instanceof King)
+								( (possiblePiece instanceof Pawn && possiblePiece.getColor() == Color.WHITE) || possiblePiece instanceof King)
 								);
 				if(opponentPiece && dangerPiece) {
 					return true;
@@ -162,7 +162,7 @@ public abstract class ChessPiece extends Piece{
 			
 		}
 		
-		//Check-DOWN-RIGHT
+		//Check-UP-RIGHT
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
@@ -178,7 +178,7 @@ public abstract class ChessPiece extends Piece{
 								(
 								(i + 1 == position.getRow() && j - 1 == position.getColumn()) 
 								&&
-								(possiblePiece instanceof Pawn || possiblePiece instanceof King)
+								( (possiblePiece instanceof Pawn && possiblePiece.getColor() == Color.BLACK) || possiblePiece instanceof King)
 								);
 				if(opponentPiece && dangerPiece) {
 					return true;
@@ -187,7 +187,7 @@ public abstract class ChessPiece extends Piece{
 			
 		}
 		
-		//Check-DOWN-LEFT
+		//Check-UP-LEFT
 		i = position.getRow();
 		j = position.getColumn();
 		foundPiece = false;
@@ -203,7 +203,7 @@ public abstract class ChessPiece extends Piece{
 								(
 								(i + 1 == position.getRow() && j + 1 == position.getColumn()) 
 								&&
-								(possiblePiece instanceof Pawn || possiblePiece instanceof King)
+								( (possiblePiece instanceof Pawn && possiblePiece.getColor() == Color.BLACK) || possiblePiece instanceof King)
 								);
 				if(opponentPiece && dangerPiece) {
 					return true;
@@ -212,7 +212,7 @@ public abstract class ChessPiece extends Piece{
 			
 		}
 		
-		//UP-UP-RIGHT
+		//DOWN-DOWN-RIGHT
 		if(position.getRow() < 6 && position.getColumn() < 7) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 2, position.getColumn() + 1);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -220,7 +220,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}
 		
-		//UP-UP-LEFT
+		//DOWN-DOWN-LEFT
 		if(position.getRow() < 6 && position.getColumn() > 0) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 2, position.getColumn() - 1);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -228,7 +228,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}	
 		
-		//UP-RIGHT-RIGHT
+		//DOWN-RIGHT-RIGHT
 		if(position.getRow() < 7 && position.getColumn() < 6) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 1, position.getColumn() + 2);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -236,7 +236,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}			
 		
-		//UP-LEFT-LEFT
+		//DOWN-LEFT-LEFT
 		if(position.getRow() < 7 && position.getColumn() > 1) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 1, position.getColumn() - 2);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -244,7 +244,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}
 		
-		//DOWN-DOWN-RIGHT
+		//UP-UP-RIGHT
 		if(position.getRow() > 1 && position.getColumn() < 7) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 2, position.getColumn() + 1);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -252,7 +252,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}
 		
-		//DOWN-DOWN-LEFT
+		//UP-UP-LEFT
 		if(position.getRow() > 1 && position.getColumn() > 0) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 2, position.getColumn() - 1);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -260,7 +260,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}
 		
-		//DOWN-RIGHT-RIGHT
+		//UP-RIGHT-RIGHT
 		if(position.getRow() > 0 && position.getColumn() < 6) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 1, position.getColumn() + 2);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -268,7 +268,7 @@ public abstract class ChessPiece extends Piece{
 			}
 		}		
 		
-		//DOWN-LEFT-LEFT
+		//UP-LEFT-LEFT
 		if(position.getRow() > 0 && position.getColumn() > 1) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 1, position.getColumn() - 2);
 			if(possiblePiece != null && (possiblePiece instanceof Horse && possiblePiece.getColor() != color)) {
@@ -278,8 +278,27 @@ public abstract class ChessPiece extends Piece{
 		
 		return false;
 	}
+
+	protected static boolean kingWillBeProtected(ChessBoard board, Position sourcePosition, Position movePosition, Position kingPosition) {
+		ChessPiece piece = (ChessPiece) board.seePosition(sourcePosition);
+		board.nullPosition(piece.getPosition());
+		Position piecePosition = piece.getPosition();
+
+		ChessPiece possiblePiece = (ChessPiece) board.seePosition(movePosition);
+		board.putInPosition(piece, movePosition);
+		boolean kingInCheck = threatenedPosition(kingPosition, piece.getColor(), board);
+		if (possiblePiece != null) {
+			board.putInPosition(possiblePiece, movePosition);
+		} else {
+			board.nullPosition(movePosition);
+		}
+
+		board.putInPosition(piece, piecePosition);
+		return !kingInCheck;
+
+	}
 	
-	public abstract ArrayList<Position> getMoves();
+	public abstract ArrayList<Position> getMoves(Position kingPosition);
 
 	public abstract char getLetter();
 

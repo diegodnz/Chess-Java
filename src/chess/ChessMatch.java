@@ -179,7 +179,7 @@ public class ChessMatch {
 
 		for (ChessPiece piece : player.getNormalPieces()) {
 			if (piece != null) {
-				for (Position move : piece.getMoves()) {
+				for (Position move : piece.getMoves(player.getKing().getPosition())) {
 					opponentPiece = (ChessPiece) testBoard.seePosition(move);
 					testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
 					testBoard.nullPosition(piece.getPosition());
@@ -208,7 +208,7 @@ public class ChessMatch {
 		ArrayList<ChessPiece> playerPieces = getNormalPieces(king, board);
 
 		for (ChessPiece piece : playerPieces) {
-			for (Position move : piece.getMoves()) {
+			for (Position move : piece.getMoves(king.getPosition())) {
 				opponentPiece = (ChessPiece) testBoard.seePosition(move);
 				testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
 				testBoard.nullPosition(piece.getPosition());
@@ -222,7 +222,7 @@ public class ChessMatch {
 			}
 		}
 
-		if (!king.getMoves().isEmpty()) {
+		if (!king.getMoves(null).isEmpty()) {
 			return true;
 		}
 

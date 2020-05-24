@@ -94,12 +94,12 @@ public class ChessUI {
 
 				ChessPlayer player = getTurnPlayer(match);
 				if (!check) {
-					ArrayList<Position> possibleMoves = sourcePiece.getMoves();
+					ArrayList<Position> possibleMoves = sourcePiece.getMoves(player.getKing().getPosition());
 					if (possibleMoves.isEmpty()) {
 						throw new ChessException("There are no movements to do with this piece.");
 					}
 				} else if (sourcePiece instanceof King) {
-					if (sourcePiece.getMoves().isEmpty()) {
+					if ( ((King) sourcePiece).getMoves().isEmpty()) {
 						throw new ChessException("The king can't move to a safe position, choose a piece that can protect him");
 					}
 				} else if (sourcePiece.getProtectMoves(player.getKing().getPosition()).isEmpty()) {
@@ -110,7 +110,7 @@ public class ChessUI {
 				ArrayList<Position> possibleMoves;
 				ChessPlayer player = getTurnPlayer(match);
 				if (!check) {
-					possibleMoves = sourcePiece.getMoves();
+					possibleMoves = sourcePiece.getMoves(player.getKing().getPosition());
 				} else {
 					possibleMoves = new ArrayList<>();
 					ArrayList<Position> protectMoves = sourcePiece.getProtectMoves(player.getKing().getPosition());
