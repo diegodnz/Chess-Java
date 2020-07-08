@@ -11,7 +11,6 @@ import chess.pieces.Pawn;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ChessMatch {
@@ -20,27 +19,50 @@ public class ChessMatch {
 	private Turn turn;
 	private ChessPlayer whitePlayer;
 	private ChessPlayer blackPlayer;
-	private boolean hasBot;
-	private Turn botTurn;
-	private boolean randomBot;
+	private boolean whiteIsBot;
+	private boolean blackIsBot;
+	private boolean whiteIsRandom;
+	private boolean blackIsRandom;
 
-	public ChessMatch(boolean hasBot, Turn botTurn, boolean randomBot) {
+	public ChessMatch(PlayerType player1, PlayerType player2) {
 		board = new ChessBoard();
 		turn = Turn.WHITETURN;
-		this.hasBot = hasBot;
-		this.botTurn = botTurn;
-		this.randomBot = randomBot;
+
+		if(player1 == PlayerType.PERSON) {
+			whiteIsBot = false;
+			whiteIsRandom = false;
+		}else if(player1 == PlayerType.BOT) {
+			whiteIsBot = true;
+			whiteIsRandom = true;
+		}else if(player1 == PlayerType.MINIMAX) {
+			whiteIsBot = true;
+			whiteIsRandom = false;
+		}
+
+		if(player2 == PlayerType.PERSON) {
+			blackIsBot = false;
+			blackIsRandom = false;
+		}else if(player2 == PlayerType.BOT) {
+			blackIsBot = true;
+			blackIsRandom = true;
+		}else if(player2 == PlayerType.MINIMAX) {
+			blackIsBot = true;
+			blackIsRandom = false;
+		}
+
 		startMatch();
 	}
 
 	public ChessMatch() {
 		board = new ChessBoard();
 		turn = Turn.WHITETURN;
-		hasBot = false;
+		whiteIsBot = false;
+		blackIsBot = false;	
+		whiteIsRandom = false;
+		blackIsRandom = false;
 		startMatch();
 	}
 
-	public boolean isRandomBot() { return randomBot; }
 
 	public ChessBoard getBoard() {
 		return board;
@@ -54,12 +76,20 @@ public class ChessMatch {
 		this.turn = turn;
 	}
 
-	public boolean hasBot() {
-		return hasBot;
+	public boolean whiteIsBot() {
+		return whiteIsBot;
 	}
 
-	public Turn getBotTurn() {
-		return botTurn;
+	public boolean blackIsBot() {
+		return blackIsBot;
+	}
+
+	public boolean whiteIsRandom() {
+		return whiteIsRandom;
+	}
+
+	public boolean blackIsRandom() {
+		return blackIsRandom;
 	}
 
 	public ChessPlayer getWhitePlayer() {
@@ -71,9 +101,8 @@ public class ChessMatch {
 	}
 
 	public void turnOffBots() {
-		hasBot = false;
-		randomBot = false;
-		botTurn = null;
+		whiteIsBot = false;
+		blackIsBot = false;
 	}
 
 	public ChessPiece validPiece(Position position) {
@@ -175,27 +204,17 @@ public class ChessMatch {
 		ChessBoard testBoard = new ChessBoard();
 		board.clone(testBoard);
 		King playerKing = player.getKing();
-		ChessPiece opponentPiece;
-
-		for (ChessPiece piece : player.getNormalPieces()) {
-			if (piece != null) {
-				for (Position move : piece.getMoves(player.getKing().getPosition())) {
-					opponentPiece = (ChessPiece) testBoard.seePosition(move);
-					testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
-					testBoard.nullPosition(piece.getPosition());
-
-					if (!ChessPiece.threatenedPosition(playerKing.getPosition(), playerKing.getColor(), testBoard)) {
-						return true;
-					}
-
-					testBoard.getPieces()[piece.getPosition().getRow()][piece.getPosition().getColumn()] = piece;
-					testBoard.getPieces()[move.getRow()][move.getColumn()] = opponentPiece;
-				}
-			}
-		}
 
 		if (!playerKing.getMoves().isEmpty()) {
 			return true;
+		}
+
+		for (ChessPiece piece : player.getNormalPieces()) {
+			if (piece != null) {
+				if(!piece.getMoves(playerKing.getPosition()).isEmpty()) {
+					return true;
+				}
+			}
 		}
 
 		return false;
@@ -204,27 +223,17 @@ public class ChessMatch {
 	private static boolean canProtectKing(ChessPiece king, ChessBoard board) {
 		ChessBoard testBoard = new ChessBoard();
 		board.clone(testBoard);
-		ChessPiece opponentPiece;
 		ArrayList<ChessPiece> playerPieces = getNormalPieces(king, board);
 
-		for (ChessPiece piece : playerPieces) {
-			for (Position move : piece.getMoves(king.getPosition())) {
-				opponentPiece = (ChessPiece) testBoard.seePosition(move);
-				testBoard.getPieces()[move.getRow()][move.getColumn()] = piece;
-				testBoard.nullPosition(piece.getPosition());
-
-				if (!ChessPiece.threatenedPosition(king.getPosition(), king.getColor(), testBoard)) {
-					return true;
-				}
-
-				testBoard.getPieces()[piece.getPosition().getRow()][piece.getPosition().getColumn()] = piece;
-				testBoard.getPieces()[move.getRow()][move.getColumn()] = opponentPiece;
-			}
-		}
-
-		if (!king.getMoves(null).isEmpty()) {
+		if (!king.getMoves(king.getPosition()).isEmpty()) {
 			return true;
 		}
+
+		for (ChessPiece piece : playerPieces) {
+			if(!piece.getMoves(king.getPosition()).isEmpty()) {
+				return true;
+			}
+		}		
 
 		return false;
 	}

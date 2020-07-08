@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Horse extends ChessPiece{
@@ -26,73 +25,84 @@ public class Horse extends ChessPiece{
 		//UP-UP-RIGHT
 		if(position.getRow() < 6 && position.getColumn() < 7) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 2, position.getColumn() + 1);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() + 2, position.getColumn() + 1));
+			Position movePosition = new Position(position.getRow() + 2, position.getColumn() + 1);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}
 		
 		//UP-UP-LEFT
 		if(position.getRow() < 6 && position.getColumn() > 0) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 2, position.getColumn() - 1);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() + 2, position.getColumn() - 1));
+			Position movePosition = new Position(position.getRow() + 2, position.getColumn() - 1);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}	
 		
 		//UP-RIGHT-RIGHT
 		if(position.getRow() < 7 && position.getColumn() < 6) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 1, position.getColumn() + 2);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() + 1, position.getColumn() + 2));
+			Position movePosition = new Position(position.getRow() + 1, position.getColumn() + 2);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}			
 		
 		//UP-LEFT-LEFT
 		if(position.getRow() < 7 && position.getColumn() > 1) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() + 1, position.getColumn() - 2);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() + 1, position.getColumn() - 2));
+			Position movePosition = new Position(position.getRow() + 1, position.getColumn() - 2);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}
 		
 		//DOWN-DOWN-RIGHT
 		if(position.getRow() > 1 && position.getColumn() < 7) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 2, position.getColumn() + 1);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() - 2, position.getColumn() + 1));
+			Position movePosition = new Position(position.getRow() - 2, position.getColumn() + 1);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}
 		
 		//DOWN-DOWN-LEFT
 		if(position.getRow() > 1 && position.getColumn() > 0) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 2, position.getColumn() - 1);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() - 2, position.getColumn() - 1));
+			Position movePosition = new Position(position.getRow() - 2, position.getColumn() - 1);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}
 		
 		//DOWN-RIGHT-RIGHT
 		if(position.getRow() > 0 && position.getColumn() < 6) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 1, position.getColumn() + 2);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() - 1, position.getColumn() + 2));
+			Position movePosition = new Position(position.getRow() - 1, position.getColumn() + 2);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}		
 		
 		//DOWN-LEFT-LEFT
 		if(position.getRow() > 0 && position.getColumn() > 1) {
 			possiblePiece = (ChessPiece)board.seePosition(position.getRow() - 1, position.getColumn() - 2);
-			if(possiblePiece == null || possiblePiece.getColor() != color) {
-				moves.add(new Position(position.getRow() - 1, position.getColumn() - 2));
+			Position movePosition = new Position(position.getRow() - 1, position.getColumn() - 2);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(allowedMove && (possiblePiece == null || possiblePiece.getColor() != color) ) {
+				moves.add(movePosition);
 			}
 		}
 		
 		return moves;
-	}
-
-	@Override
-	public  ArrayList<Position> getProtectMoves(Position kingPosition) {
-		return new ArrayList<>();
 	}
 
 	@Override

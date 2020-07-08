@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Bishop extends ChessPiece{
@@ -31,11 +30,13 @@ public class Bishop extends ChessPiece{
 			line++;
 			column++;
 			possiblePiece = (ChessPiece)board.seePosition(line, column);
-			if(possiblePiece == null) {
-				moves.add(new Position(line, column));
-			}else {
-				if(possiblePiece.getColor() != color) {
-					moves.add(new Position(line, column));
+			Position movePosition = new Position(line, column);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(possiblePiece == null && allowedMove) {
+				moves.add(movePosition);
+			}else if (possiblePiece != null) {
+				if(possiblePiece.getColor() != color && allowedMove) {
+					moves.add(movePosition);
 				}
 				break;
 			}
@@ -48,11 +49,13 @@ public class Bishop extends ChessPiece{
 			line++;
 			column--;
 			possiblePiece = (ChessPiece)board.seePosition(line, column);
-			if(possiblePiece == null) {
-				moves.add(new Position(line, column));
-			}else {
-				if(possiblePiece.getColor() != color) {
-					moves.add(new Position(line, column));
+			Position movePosition = new Position(line, column);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(possiblePiece == null && allowedMove) {
+				moves.add(movePosition);
+			}else if (possiblePiece != null) {
+				if(possiblePiece.getColor() != color && allowedMove) {
+					moves.add(movePosition);
 				}
 				break;
 			}
@@ -65,11 +68,13 @@ public class Bishop extends ChessPiece{
 			line--;
 			column++;
 			possiblePiece = (ChessPiece)board.seePosition(line, column);
-			if(possiblePiece == null) {
-				moves.add(new Position(line, column));
-			}else {
-				if(possiblePiece.getColor() != color) {
-					moves.add(new Position(line, column));
+			Position movePosition = new Position(line, column);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(possiblePiece == null && allowedMove) {
+				moves.add(movePosition);
+			}else if (possiblePiece != null) {
+				if(possiblePiece.getColor() != color && allowedMove) {
+					moves.add(movePosition);
 				}
 				break;
 			}
@@ -82,22 +87,19 @@ public class Bishop extends ChessPiece{
 			line--;
 			column--;
 			possiblePiece = (ChessPiece)board.seePosition(line, column);
-			if(possiblePiece == null) {
-				moves.add(new Position(line, column));
-			}else {
-				if(possiblePiece.getColor() != color) {
-					moves.add(new Position(line, column));
+			Position movePosition = new Position(line, column);
+			boolean allowedMove = kingWillBeSafe((ChessBoard)board, position, movePosition, kingPosition);
+			if(possiblePiece == null && allowedMove) {
+				moves.add(movePosition);
+			}else if (possiblePiece != null) {
+				if(possiblePiece.getColor() != color && allowedMove) {
+					moves.add(movePosition);
 				}
 				break;
 			}
 		}
 		
 		return moves;
-	}
-
-	@Override
-	public  ArrayList<Position> getProtectMoves(Position kingPosition) {
-		return new ArrayList<>();
 	}
 
 	@Override

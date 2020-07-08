@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import board.Board;
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMove;
 import chess.ChessPiece;
-import chess.ChessUI;
 
 public class Pawn extends ChessPiece {
 
@@ -39,7 +37,7 @@ public class Pawn extends ChessPiece {
 				possiblePiece = (ChessPiece) board.seePosition(position.getRow() + (2 * stepFoward), position.getColumn());
 				if (possiblePiece == null) {
 					Position movePosition = new Position(position.getRow() + (2 * stepFoward), position.getColumn());
-					if (ChessPiece.kingWillBeProtected((ChessBoard) board,  position, movePosition, kingPosition)) {
+					if (ChessPiece.kingWillBeSafe((ChessBoard) board,  position, movePosition, kingPosition)) {
 						moves.add(movePosition);
 					}
 				}
@@ -48,7 +46,7 @@ public class Pawn extends ChessPiece {
 			possiblePiece = (ChessPiece) board.seePosition(position.getRow() + stepFoward, position.getColumn());
 			if (possiblePiece == null) {
 				Position movePosition = new Position(position.getRow() + stepFoward, position.getColumn());
-				if (ChessPiece.kingWillBeProtected((ChessBoard) board, position, movePosition, kingPosition)) {
+				if (ChessPiece.kingWillBeSafe((ChessBoard) board, position, movePosition, kingPosition)) {
 					moves.add(movePosition);
 				}
 			}
@@ -57,7 +55,7 @@ public class Pawn extends ChessPiece {
 				possiblePiece = (ChessPiece) board.seePosition(position.getRow() + stepFoward, position.getColumn() + 1);
 				if (possiblePiece != null && possiblePiece.getColor() != color) {
 					Position movePosition = new Position(position.getRow() + stepFoward, position.getColumn() + 1);
-					if (ChessPiece.kingWillBeProtected((ChessBoard) board, position, movePosition, kingPosition)) {
+					if (ChessPiece.kingWillBeSafe((ChessBoard) board, position, movePosition, kingPosition)) {
 						moves.add(movePosition);
 					}
 				}
@@ -67,7 +65,7 @@ public class Pawn extends ChessPiece {
 				possiblePiece = (ChessPiece) board.seePosition(position.getRow() + stepFoward, position.getColumn() - 1);
 				if (possiblePiece != null && possiblePiece.getColor() != color) {
 					Position movePosition = new Position(position.getRow() + stepFoward, position.getColumn() - 1);
-					if (ChessPiece.kingWillBeProtected((ChessBoard) board, position, movePosition, kingPosition)) {
+					if (ChessPiece.kingWillBeSafe((ChessBoard) board, position, movePosition, kingPosition)) {
 						moves.add(movePosition);
 					}
 				}
@@ -76,102 +74,6 @@ public class Pawn extends ChessPiece {
 		}
 
 		return moves;
-	}
-
-	@Override
-	public ArrayList<Position> getProtectMoves(Position kingPosition) {
-		ArrayList<Position> moves = new ArrayList<>();
-		ChessPiece possiblePiece;
-		boolean canStepFoward = (color == Color.BLACK && position.getRow() < 7) || (color == Color.WHITE && position.getRow() > 0);
-		boolean firstMove = (color == Color.BLACK && position.getRow() == 1) || (color == Color.WHITE && position.getRow() == 6);
-
-		int stepFoward;
-		if (color == Color.BLACK) {
-			stepFoward = +1;
-		} else {
-			stepFoward = -1;
-		}
-
-		if (canStepFoward) {
-			int targetRow;
-			int targetColumn;
-			board.nullPosition(position);
-
-			if (firstMove) {
-				targetRow = position.getRow() + (2 * stepFoward);
-				targetColumn = position.getColumn();
-				possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
-				if (possiblePiece == null) {
-					boolean protection = protectStepingFoward(targetRow, targetColumn, kingPosition);
-					if (protection) {
-						moves.add(new Position(targetRow, targetColumn));
-					}
-				}
-			}
-
-			targetRow = position.getRow() + stepFoward;
-			targetColumn = position.getColumn();
-			possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
-			if (possiblePiece == null) {
-				boolean protection = protectStepingFoward(targetRow, targetColumn, kingPosition);
-				if (protection) {
-					moves.add(new Position(targetRow, targetColumn));
-				}
-			}
-
-			if (position.getColumn() < 7) {
-				targetRow = position.getRow() + stepFoward;
-				targetColumn = position.getColumn() + 1;
-				possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
-				if (possiblePiece != null && possiblePiece.getColor() != color) {
-					if (possiblePiece != null && possiblePiece.getColor() != color) {
-						boolean protection = protectCapturingEnemy(targetRow, targetColumn, kingPosition, possiblePiece);
-						if (protection) {
-							moves.add(new Position(targetRow, targetColumn));
-						}
-					}
-				}
-			}
-
-			if (position.getColumn() > 0) {
-				targetRow = position.getRow() + stepFoward;
-				targetColumn = position.getColumn() - 1;
-				possiblePiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
-				if (possiblePiece != null && possiblePiece.getColor() != color) {
-					boolean protection = protectCapturingEnemy(targetRow, targetColumn, kingPosition, possiblePiece);
-					if (protection) {
-						moves.add(new Position(targetRow, targetColumn));
-					}
-				}
-			}
-
-			board.putInPosition(this, position);
-		}
-
-		return moves;
-	}
-
-	private boolean protectStepingFoward(int targetRow, int targetColumn, Position kingPosition) {
-		board.putInPosition(new Pawn((ChessBoard)board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
-		boolean canProtectKing = !(ChessPiece.threatenedPosition(kingPosition, color, board));
-		board.nullPosition(targetRow, targetColumn);
-		if (canProtectKing) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean protectCapturingEnemy(int targetRow, int targetColumn, Position kingPosition, ChessPiece possiblePiece) {
-		board.putInPosition(new Pawn((ChessBoard)board, new Position(targetRow, targetColumn), color), targetRow, targetColumn);
-		boolean canProtectKing = !(ChessPiece.threatenedPosition(kingPosition, color, board));
-		board.nullPosition(targetRow, targetColumn);
-		board.putInPosition(possiblePiece, possiblePiece.getPosition());
-		if (canProtectKing) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	@Override

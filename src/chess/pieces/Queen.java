@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMove;
 import chess.ChessPiece;
 
 public class Queen extends ChessPiece{
@@ -21,11 +20,6 @@ public class Queen extends ChessPiece{
 		moves.addAll(bishopMoves);
 		moves.addAll(rookMoves);		
 		return moves;						
-	}
-
-	@Override
-	public  ArrayList<Position> getProtectMoves(Position kingPosition) {
-		return new ArrayList<>();
 	}
 
 	@Override

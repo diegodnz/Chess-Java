@@ -3,8 +3,6 @@ package GameTree;
 import board.Piece;
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMatch;
-import chess.ChessMove;
 import chess.ChessPiece;
 import chess.pieces.*;
 
@@ -115,49 +113,24 @@ public class ChessTree {
         }
 
         ArrayList<String> adjacents = new ArrayList<>();
-        if (ChessMatch.check(blackKing, whiteKing, board) && ChessMatch.checkMate(whiteKing, blackKing, board, playerColor)) {
-            return adjacents; //CheckMate returns empty adjacents
-        } else if (playerColor == Color.WHITE && ChessMatch.kingInCheck(whiteKing, board)) {
-            getProtectMove(board, boardString, playerColor, adjacents, whiteKing);
-        } else if (playerColor == Color.BLACK && ChessMatch.kingInCheck(blackKing, board)) {
-            getProtectMove(board, boardString, playerColor, adjacents, blackKing);
-        } else {
-            Piece[][] pieces = board.getPieces();
-            for (Piece[] row : pieces) {
-                for (Piece piece: row) {
-                    if (piece != null && playerColor ==  ((ChessPiece)piece).getColor()) {
-                        ArrayList<Position> moves;
-                        if (((ChessPiece) piece).getColor() == Color.WHITE) {
-                            moves = ((ChessPiece) piece).getMoves(whiteKing.getPosition());
-                        } else {
-                            moves = ((ChessPiece) piece).getMoves(blackKing.getPosition());
-                        }
-                        for (Position movePosition: moves) {
-                            adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
-                        }
-                    }
-                }
-            }
-        }
-        return adjacents;        
-    }
-
-    private static void getProtectMove(ChessBoard board, String boardString, Color playerColor, ArrayList<String> adjacents, King king) {
         Piece[][] pieces = board.getPieces();
         for (Piece[] row : pieces) {
             for (Piece piece: row) {
-                if (piece != null) {
-                    if (playerColor == ((ChessPiece) piece).getColor()) {
-                        ArrayList<Position> protectMoves = ((ChessPiece) piece).getProtectMoves(king.getPosition());
-                        if (!protectMoves.isEmpty()) {
-                            for (Position move : protectMoves) {
-                                adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), move));
-                            }
-                        }
+                if (piece != null && playerColor == ((ChessPiece)piece).getColor()) {
+                    ArrayList<Position> moves;
+                    if (((ChessPiece) piece).getColor() == Color.WHITE) {
+                        moves = ((ChessPiece) piece).getMoves(whiteKing.getPosition());
+                    } else {
+                        moves = ((ChessPiece) piece).getMoves(blackKing.getPosition());
+                    }
+                    for (Position movePosition: moves) {
+                        adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
                     }
                 }
             }
         }
+        
+        return adjacents;        
     }
 
     private static String getMoveRepresentation(String boardString, Piece movedPiece, Position sourcePosition, Position targetPosition) {

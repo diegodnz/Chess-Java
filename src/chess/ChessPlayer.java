@@ -85,43 +85,17 @@ public class ChessPlayer {
 		return new ChessMove(playPiece.getPosition(), targetMove);
 	}
 
-	public ChessMove protectRandomMove() {
-		ArrayList<ChessMove> protectKingMoves = new ArrayList<>();
-		Random gen = new Random();
-
-		for (ChessPiece piece : normalPieces) {
-			if (piece != null) {
-				ArrayList<Position> protectionMoves = piece.getProtectMoves(king.getPosition());
-				if (!protectionMoves.isEmpty()) {
-					for (Position move: protectionMoves){
-						protectKingMoves.add(new ChessMove(piece.getPosition(), move));
-					}
-				}
-			}
-		}
-
-		ArrayList<Position> kingMoves = king.getProtectMoves(king.getPosition());
-		if (!kingMoves.isEmpty()) {
-			for (Position move: kingMoves) {
-				protectKingMoves.add(new ChessMove(king.getPosition(), move));
-			}
-		}
-
-		int i = gen.nextInt(protectKingMoves.size());
-		return protectKingMoves.get(i);
-	}
-
-	public ChessMove gameTreeMove(String board, Color playerColor) {
+	public ChessMove gameTreeMove(String board) {
 		GameTree gameTree = new GameTree(Game.CHESS);
-		gameTree.buildTree(board, 2, playerColor);
+		gameTree.buildTree(board, 4, this.color);
 
 		Node boardNode = gameTree.getBoardNode(board);
 		String movementBoard = gameTree.miniMax(boardNode);
 
-		return compareBoards(board, movementBoard);
+		return getMove(board, movementBoard);
 	}
 
-	private ChessMove compareBoards(String mainBoard, String moveBoard) {
+	private ChessMove getMove(String mainBoard, String moveBoard) {
 		Position sourcePosition = null;
 		Position targetPosition = null;
 		for (int i = 0; i < mainBoard.length(); i++) {

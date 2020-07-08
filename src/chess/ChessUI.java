@@ -7,7 +7,6 @@ import application.ClearScreen;
 import board.BoardException;
 import board.Piece;
 import board.Position;
-import chess.pieces.Color;
 import chess.pieces.King;
 
 public class ChessUI {
@@ -34,8 +33,10 @@ public class ChessUI {
 	 */
 
 	public static void printBoard(ChessBoard board) {
-		System.out.println("         a      b      c      d      e      f      g      h \n\n");
-		System.out.println("     __________________________________________________________");
+		System.out.println("         a      b      c      d      e      f      g      h \n");
+		System.out.println("      ________________________________________________________");
+		System.out.println("     /                                                        \\");
+		System.out.println("    |                                                          |");
 		System.out.println("    |                                                          |");
 		for(int row = 0; row < board.getNumRows(); row++) {
 			System.out.print(8-row + "   | ");
@@ -51,8 +52,10 @@ public class ChessUI {
 
 			System.out.println(" |    " + (8-row));
 			System.out.println("    |                                                          |");
+			System.out.println("    |                                                          |");
+			System.out.println("    |                                                          |");
 		}
-		System.out.println("     __________________________________________________________");
+		System.out.println("     \\________________________________________________________/");
 		System.out.println("\n         a      b      c      d      e      f      g      h \n");
 	}
 	
@@ -102,25 +105,17 @@ public class ChessUI {
 					if ( ((King) sourcePiece).getMoves().isEmpty()) {
 						throw new ChessException("The king can't move to a safe position, choose a piece that can protect him");
 					}
-				} else if (sourcePiece.getProtectMoves(player.getKing().getPosition()).isEmpty()) {
+				} else if (sourcePiece.getMoves(player.getKing().getPosition()).isEmpty()) {
 					throw new ChessException("This piece can't protect the king!!");
 				}
 			} else { //type = Target
 				ChessPiece sourcePiece = match.validPiece(sourcePosition);
 				ArrayList<Position> possibleMoves;
-				ChessPlayer player = getTurnPlayer(match);
-				if (!check) {
-					possibleMoves = sourcePiece.getMoves(player.getKing().getPosition());
-				} else {
-					possibleMoves = new ArrayList<>();
-					ArrayList<Position> protectMoves = sourcePiece.getProtectMoves(player.getKing().getPosition());
-					for (Position move: protectMoves) {
-						possibleMoves.add(move);
-					}
-				}
+				ChessPlayer player = getTurnPlayer(match);				
+				possibleMoves = sourcePiece.getMoves(player.getKing().getPosition());			
 
 				if (printBoard) {
-					//ClearScreen.clear();
+					ClearScreen.clear();
 					ChessBoard movementBoard = new ChessBoard();
 					for (int i = 0; i < 8; i++) {
 						movementBoard.setPiecesRow(match.getBoard().getPiecesRow(i).clone(), i);
@@ -146,6 +141,7 @@ public class ChessUI {
 				position = getEntry(sc, type);
 				if (position == null) {
 					System.out.println();
+					ClearScreen.clear();
 					ChessUI.printBoard(match.getBoard());
 					return null;
 				} else if (!possibleMoves.contains(position)) {
@@ -178,27 +174,18 @@ public class ChessUI {
 			}
 		}
 
-		//if (match.hasBot() && match.getTurn() == match.getBotTurn()) {
-		if (match.hasBot()) { //Debug
+		if ( (match.getTurn() == Turn.WHITETURN && match.whiteIsBot()) || (match.getTurn() == Turn.BLACKTURN && match.blackIsBot()) ) {		
 			if (match.getTurn() == Turn.WHITETURN) {
-				if (match.isRandomBot()) {
-					if (check) {
-						return match.getWhitePlayer().protectRandomMove();
-					} else {
-						return match.getWhitePlayer().randomMove();
-					}
+				if (match.whiteIsRandom()) {
+					return match.getWhitePlayer().randomMove();
 				} else {
-					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString(), Color.WHITE);
+					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString());
 				}
 			} else {
-				if (match.isRandomBot()) {
-					if (check) {
-						return match.getBlackPlayer().protectRandomMove();
-					} else {
-						return match.getBlackPlayer().randomMove();
-					}
+				if (match.blackIsRandom()) {
+					return match.getBlackPlayer().randomMove();					
 				} else {
-					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString(), Color.BLACK);
+					return match.getBlackPlayer().gameTreeMove(match.getBoard().toString());
 				}
 			}
 		} else {

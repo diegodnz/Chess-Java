@@ -7,7 +7,6 @@ import board.Position;
 import chess.pieces.Color;
 import chess.pieces.King;
 
-import java.util.ArrayList;
 
 public class ChessBoard extends Board{
 

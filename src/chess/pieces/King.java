@@ -1,11 +1,8 @@
 package chess.pieces;
 
 import java.util.ArrayList;
-
-import board.Board;
 import board.Position;
 import chess.ChessBoard;
-import chess.ChessMove;
 import chess.ChessPiece;
 
 public class King extends ChessPiece{
@@ -41,12 +38,7 @@ public class King extends ChessPiece{
 
 		return moves;
 	}
-
-	@Override
-	public ArrayList<Position> getProtectMoves(Position kingPosition) {
-		return getMoves();
-	}
-
+	
 	@Override
 	public String toString() {
 		if(color == Color.BLACK) {

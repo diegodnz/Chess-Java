@@ -1,6 +1,5 @@
 package GameTree;
 
-import board.Piece;
 import chess.pieces.Color;
 
 import java.util.ArrayList;
@@ -100,7 +99,6 @@ public class GameTree {
     }
 
     public String miniMax(Node board) {
-        System.out.println(tree.get(board).get(maxAdjacent.get(board)));
         return maxAdjacent.get(board).getRepresantation();
     }
 
