@@ -19,34 +19,25 @@ public class ChessTree {
         piecesValue.put('r', 50);
         piecesValue.put('h', 30);
         piecesValue.put('b', 30);
-        piecesValue.put('q', 90);
-        piecesValue.put('k', 900);
+        piecesValue.put('q', 90);   
+        piecesValue.put('k', 1000);     
         piecesValue.put('P', -10);
         piecesValue.put('R', -50);
         piecesValue.put('H', -30);
         piecesValue.put('B', -30);
-        piecesValue.put('Q', -90);
-        piecesValue.put('K', -900);
+        piecesValue.put('Q', -90);  
+        piecesValue.put('K', -1000);      
     }
 
-    public static int getNodeValue(HashMap<Character, Integer> numOfPieces, Color playerColor, String nodeBoard) {
-        int nodeValue = 0;
-        HashMap<Character, Integer> nodeNumOfPieces = getNumOfPieces(nodeBoard);
-
-        int colorFactor;
-        if (playerColor == Color.WHITE) {
-            colorFactor = 1;
-        } else {
-            colorFactor = -1;
+    public static int getNodeValue(String nodeBoard) {
+        int value = 0;        
+        for(int i = 0; i < nodeBoard.length(); i++) {
+            char piece = nodeBoard.charAt(i);
+            if(piece != '0') {                
+                value += piecesValue.get(piece);
+            }
         }
-
-        int difference = 0;
-        for (Character piece : piecesValue.keySet()) {
-            difference = ( numOfPieces.get(piece) - nodeNumOfPieces.get(piece) ) * piecesValue.get(piece);
-            nodeValue -= difference * colorFactor;
-        }
-
-        return nodeValue;
+        return value;
     }
 
     public static HashMap<Character, Integer> getNumOfPieces(String board) {
@@ -72,7 +63,7 @@ public class ChessTree {
         return numOfPieces;
     }
 
-    public static ArrayList<String> getAdjacents(String boardString, Color playerColor) {        
+    public static ArrayList<String> getAdjacents(String boardString, Color turnColor) {        
         ChessBoard board = new ChessBoard();
         King whiteKing = null;
         King blackKing = null;
@@ -116,7 +107,7 @@ public class ChessTree {
         Piece[][] pieces = board.getPieces();
         for (Piece[] row : pieces) {
             for (Piece piece: row) {
-                if (piece != null && playerColor == ((ChessPiece)piece).getColor()) {
+                if (piece != null && turnColor == ((ChessPiece)piece).getColor()) {
                     ArrayList<Position> moves;
                     if (((ChessPiece) piece).getColor() == Color.WHITE) {
                         moves = ((ChessPiece) piece).getMoves(whiteKing.getPosition());

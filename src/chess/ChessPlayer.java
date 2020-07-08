@@ -5,7 +5,6 @@ import java.util.Random;
 
 import GameTree.GameTree;
 import GameTree.Game;
-import GameTree.Node;
 import board.Position;
 import chess.pieces.Color;
 import chess.pieces.King;
@@ -87,11 +86,7 @@ public class ChessPlayer {
 
 	public ChessMove gameTreeMove(String board) {
 		GameTree gameTree = new GameTree(Game.CHESS);
-		gameTree.buildTree(board, 4, this.color);
-
-		Node boardNode = gameTree.getBoardNode(board);
-		String movementBoard = gameTree.miniMax(boardNode);
-
+		String movementBoard = gameTree.searchBestMove(board, 4, this.color);
 		return getMove(board, movementBoard);
 	}
 

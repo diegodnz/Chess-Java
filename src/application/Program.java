@@ -1,12 +1,10 @@
 package application;
 
+import java.util.Random;
 import java.util.Scanner;
 
-import GameTree.GameTree;
-import GameTree.Game;
-import GameTree.ChessTree;
 import chess.PlayerType;
-import chess.ChessMatch;
+import chess.ChessMatch; 
 import chess.ChessMove;
 import chess.ChessUI;
 import chess.Turn;
@@ -15,10 +13,10 @@ public class Program {
 
 	public static void main(String[] args) throws InterruptedException {
 		Scanner sc = new Scanner(System.in);
-
-		// Init match
-		PlayerType player1 = PlayerType.BOT;
-		PlayerType player2 = PlayerType.BOT;
+		Random gen = new Random();		
+		// Init match		
+		PlayerType player1 = PlayerType.MINIMAX;
+		PlayerType player2 = PlayerType.PERSON;
 		ChessMatch match = new ChessMatch(player1, player2);
 		boolean check = false;
 		boolean checkMate = false;
@@ -32,13 +30,13 @@ public class Program {
 			match.peformMove(move);
 			check = match.check();
 			match.changeTurn();
-			if (check && match.checkMate()) {
+			if (match.checkMate()) {
 				checkMate = true;
 			}
 			if (check) {
-				match.turnOffBots();
+				//match.turnOffBots();
 			}
-			//Thread.sleep(500);
+			//Thread.sleep(1000);
 			System.out.println();
 		}		
 		ClearScreen.clear();
@@ -49,14 +47,7 @@ public class Program {
 		}else {
 			System.out.println("Black player won!!");
 		}
-		sc.close();
-		
-		/*
-		GameTree gameTree = new GameTree(Game.CHESS);
-		gameTree.buildTree("RHBQKBHRPPPPPPPP00000000000000000000000000000000pppppppprhbqkbhr", 5, Color.WHITE);
-		System.out.println(gameTree);
-		*/
-		 
+		sc.close();		
 	}	
 }
 
