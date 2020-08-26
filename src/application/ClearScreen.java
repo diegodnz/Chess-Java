@@ -6,7 +6,7 @@ public class ClearScreen {
 	
 	public static void clear() {
 		// https://stackoverflow.com/questions/2979383/java-clear-the-console
-		try {
+		try {			
 	        if (System.getProperty("os.name").contains("Windows"))
 	            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
 	        else

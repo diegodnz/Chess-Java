@@ -61,6 +61,45 @@ public class ChessPlayer {
 		normalPieces[index] = piece;
 	}
 
+	public boolean hasPossibleMoves() {
+		if (!king.getMoves().isEmpty()) {
+			return true;
+		}
+		for (ChessPiece piece : normalPieces) {
+			if (piece != null) {
+				if (!piece.getMoves(king.getPosition()).isEmpty()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean hasPiecesToWin() {
+		int horse = 0, bishop = 0;
+		for (ChessPiece piece : normalPieces) {
+			if (piece != null) {
+				if (piece.getLetter() == 'p' || piece.getLetter() == 'P') {				
+					return true;
+				} else if (piece.getLetter() == 'r' || piece.getLetter() == 'R') {
+					return true;
+				} else if (piece.getLetter() == 'h' || piece.getLetter() == 'H') {
+					horse++;
+				} else if (piece.getLetter() == 'b' || piece.getLetter() == 'B') {
+					bishop++;
+				} else if (piece.getLetter() == 'q' || piece.getLetter() == 'Q') {
+					return true;
+				}
+			}			
+		}
+
+		if (horse == 2 || bishop == 2 || (horse >= 1 && bishop >= 1) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public ChessMove randomMove() {
 		ArrayList<ChessPiece> playablePieces = new ArrayList<ChessPiece>();
 		Random gen = new Random();
@@ -84,10 +123,10 @@ public class ChessPlayer {
 		return new ChessMove(playPiece.getPosition(), targetMove);
 	}
 
-	public ChessMove gameTreeMove(String board) {
+	public ChessMove gameTreeMove(String boardString, ChessBoard board) {
 		GameTree gameTree = new GameTree(Game.CHESS);
-		String movementBoard = gameTree.searchBestMove(board, 4, this.color);
-		return getMove(board, movementBoard);
+		String movementBoard = gameTree.searchChessBestMove(boardString, board.getLastMovement(), 4, this.color);		
+		return getMove(boardString, movementBoard);
 	}
 
 	private ChessMove getMove(String mainBoard, String moveBoard) {

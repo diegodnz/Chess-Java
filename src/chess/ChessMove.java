@@ -24,5 +24,10 @@ public class ChessMove {
 	public Position getTarget() {
 		return target;
 	}
+
+	@Override
+	public String toString() {
+		return source + "  " + target;
+	}
 	
 }

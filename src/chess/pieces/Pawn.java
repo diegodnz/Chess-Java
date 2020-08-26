@@ -33,9 +33,34 @@ public class Pawn extends ChessPiece {
 
 		if (canStepFoward) {
 
+			// EnPassant left
+			if (position.getColumn() > 0) {
+				Position capturedPosition = new Position(position.getRow(), position.getColumn() - 1);
+				possiblePiece = (ChessPiece) board.seePosition(capturedPosition);
+				if ( possiblePiece instanceof Pawn && ((ChessBoard)board).canEnPassant(capturedPosition) ) {
+					Position movePosition = new Position(position.getRow() + stepFoward, position.getColumn() - 1);
+					if (ChessPiece.enPassantIsSafe((ChessBoard) board,  position, movePosition, kingPosition, capturedPosition)) {
+						moves.add(movePosition);
+					}
+				}
+			}
+
+			// EnPassant right
+			if (position.getColumn() < 7) {
+				Position capturedPosition = new Position(position.getRow(), position.getColumn() + 1);
+				possiblePiece = (ChessPiece) board.seePosition(capturedPosition);
+				if ( possiblePiece instanceof Pawn && ((ChessBoard)board).canEnPassant(capturedPosition) ) {
+					Position movePosition = new Position(position.getRow() + stepFoward, position.getColumn() + 1);
+					if (ChessPiece.enPassantIsSafe((ChessBoard) board,  position, movePosition, kingPosition, capturedPosition)) {
+						moves.add(movePosition);
+					}
+				}
+			}
+
 			if (firstMove) {
 				possiblePiece = (ChessPiece) board.seePosition(position.getRow() + (2 * stepFoward), position.getColumn());
-				if (possiblePiece == null) {
+				ChessPiece frontPiece = (ChessPiece) board.seePosition(position.getRow() + stepFoward, position.getColumn());
+				if (possiblePiece == null && frontPiece == null) {
 					Position movePosition = new Position(position.getRow() + (2 * stepFoward), position.getColumn());
 					if (ChessPiece.kingWillBeSafe((ChessBoard) board,  position, movePosition, kingPosition)) {
 						moves.add(movePosition);

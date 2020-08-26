@@ -1,5 +1,6 @@
 package GameTree;
 
+import chess.ChessMove;
 import chess.pieces.Color;
 
 import java.util.ArrayList;
@@ -15,77 +16,80 @@ public class GameTree {
         gen = new Random();
     }
 
-    public String searchBestMove(String boardString, int depth, Color turnColor) {
-        if(game == Game.CHESS) {          
-            ChessTree.InitPiecesValues();
-            return chessMiniMax(boardString, depth, turnColor).getRepresantation();
-        }else {
-            throw new RuntimeException("The game has not been defined");
-        }
+    public String searchChessBestMove(String boardString, ChessMove lastMovement, int depth, Color turnColor) {               
+        ChessTree.InitPiecesValues();
+        BoardNode thisBoard = new BoardNode(boardString, lastMovement);
+        return chessMiniMax(thisBoard, depth, turnColor).getRepresantation();        
     }
 
-    public Node chessMiniMax(String boardString, int depth, Color turnColor) {
+    public BoardNode chessMiniMax(BoardNode board, int depth, Color turnColor) {
         if(turnColor == Color.WHITE) { // MAX (WHITE)
-            int maxValue = Integer.MIN_VALUE;
+            int maxValue = -10000;
             String maxAdjacent = null;
+            ChessMove maxChessMove = null;
             if(depth > 0) {
-                ArrayList<String> adjacents = ChessTree.getAdjacents(boardString, turnColor);
+                ArrayList<BoardNode> adjacents = ChessTree.getAdjacents(board, turnColor);
                 turnColor = Color.BLACK;
-                for(String adjacent : adjacents) {
-                    Node adjacentNode = chessMiniMax(adjacent, depth-1, turnColor);
-                    int adjacentValue = adjacentNode.getValue(); 
-                    if(adjacentValue > maxValue) {
+                for(BoardNode adjacent : adjacents) {                    
+                    String adjacentString = adjacent.getRepresantation();
+                    BoardNode bestAdjacentOfAdjacent = chessMiniMax(adjacent, depth-1, turnColor);
+                    int adjacentValue = bestAdjacentOfAdjacent.getValue(); 
+                    if(maxValue == -10000 || adjacentValue > maxValue) {
                         maxValue = adjacentValue;
-                        maxAdjacent = adjacent;
-                    }else if(adjacentValue == maxValue && gen.nextInt(2) == 0) {
+                        maxAdjacent = adjacentString;
+                        maxChessMove = adjacent.getLastMovement();
+                    }else if(adjacentValue == maxValue && gen.nextInt(20) == 0) {
                         maxValue = adjacentValue;
-                        maxAdjacent = adjacent;
-                    }
+                        maxAdjacent = adjacentString;
+                        maxChessMove = adjacent.getLastMovement();
+                    }                    
                 }
-                Node bestAdjacent;
+                BoardNode bestAdjacent;
                 if(maxAdjacent == null) {
-                    bestAdjacent = new Node(null);
+                    bestAdjacent = new BoardNode(null, null);
                     bestAdjacent.setValue(Integer.MIN_VALUE);
                 }else {
-                    bestAdjacent = new Node(maxAdjacent);
+                    bestAdjacent = new BoardNode(maxAdjacent, maxChessMove);
                     bestAdjacent.setValue(maxValue);
                 }
                 return bestAdjacent;
-            }else {
-                Node thisBoard = new Node(boardString);
-                thisBoard.setValue(ChessTree.getNodeValue(boardString));
-                return thisBoard;
+            }else {                
+                board.setValue(ChessTree.getNodeValue(board.getRepresantation()));
+                return board;
             }
         }else { // MIN (BLACK)
-            int minValue = Integer.MAX_VALUE;            
+            int minValue = 10000;            
             String minAdjacent = null;
+            ChessMove minChessMove = null;
             if(depth > 0) {
-                ArrayList<String> adjacents = ChessTree.getAdjacents(boardString, turnColor);
+                ArrayList<BoardNode> adjacents = ChessTree.getAdjacents(board, turnColor);
                 turnColor = Color.WHITE;
-                for(String adjacent : adjacents) {
-                    Node adjacentNode = chessMiniMax(adjacent, depth-1, turnColor);
-                    int adjacentValue = adjacentNode.getValue(); 
-                    if(adjacentValue < minValue) {
+                for(BoardNode adjacent : adjacents) {
+                    String adjacentString = adjacent.getRepresantation();
+                    BoardNode bestAdjacentOfAdjacent = chessMiniMax(adjacent, depth-1, turnColor);
+                    int adjacentValue = bestAdjacentOfAdjacent.getValue(); 
+                    if(minValue == 10000 || adjacentValue < minValue) {
                         minValue = adjacentValue;
-                        minAdjacent = adjacent;
-                    }else if(adjacentValue == minValue && gen.nextInt(2) == 0) {
+                        minAdjacent = adjacentString;
+                        minChessMove = adjacent.getLastMovement();
+                    }else if(adjacentValue == minValue && gen.nextInt(20) == 0) {
                         minValue = adjacentValue;
-                        minAdjacent = adjacent;
+                        minAdjacent = adjacentString;
+                        minChessMove = adjacent.getLastMovement();
                     }
                 }
-                Node bestAdjacent;
+                BoardNode bestAdjacent;
                 if(minAdjacent == null) {
-                    bestAdjacent = new Node(null);
+                    bestAdjacent = new BoardNode(null, null);
                     bestAdjacent.setValue(Integer.MAX_VALUE);
                 }else {
-                    bestAdjacent = new Node(minAdjacent);
+                    bestAdjacent = new BoardNode(minAdjacent, minChessMove);
                     bestAdjacent.setValue(minValue);
                 }
                 return bestAdjacent;
-            }else {
-                Node thisBoard = new Node(boardString);
-                thisBoard.setValue(ChessTree.getNodeValue(boardString));
-                return thisBoard;
+            }else {                
+                board.setValue(ChessTree.getNodeValue(board.getRepresantation()));
+                return board;
             }
         }
         

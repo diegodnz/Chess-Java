@@ -48,8 +48,8 @@ public class ChessMatch {
 		}else if(player2 == PlayerType.MINIMAX) {
 			blackIsBot = true;
 			blackIsRandom = false;
-		}
-
+		}		
+		
 		startMatch();
 	}
 
@@ -59,7 +59,7 @@ public class ChessMatch {
 		whiteIsBot = false;
 		blackIsBot = false;	
 		whiteIsRandom = false;
-		blackIsRandom = false;
+		blackIsRandom = false;		
 		startMatch();
 	}
 
@@ -164,6 +164,24 @@ public class ChessMatch {
 		} else {
 			ChessPiece piece = (ChessPiece) board.seePosition(sourceRow, sourceColumn);
 			ChessPiece opponentPiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
+
+			// En Passant
+			if (opponentPiece == null && piece instanceof Pawn && sourceColumn != targetColumn) {
+				int enPassantRow;
+				if (piece.getColor() == Color.WHITE) {
+					enPassantRow = targetRow+1;					
+				} else {
+					enPassantRow = targetRow-1;
+				}
+				ChessPiece enPassantPiece = (ChessPiece) board.seePosition(enPassantRow, targetColumn);
+				board.nullPosition(enPassantRow, targetColumn);
+
+				if (turn == Turn.BLACKTURN) {
+					whitePlayer.addLostPiece(enPassantPiece);
+				} else {
+					blackPlayer.addLostPiece(enPassantPiece);
+				}
+			}
 
 			board.nullPosition(sourceRow, sourceColumn);
 			board.doChessMove(piece, targetRow, targetColumn);
@@ -293,6 +311,18 @@ public class ChessMatch {
 		if (!(canProtectKing(whiteKing, board)) || !(canProtectKing(blackKing, board))) {
 			return true;
 		} else if ((colorTurn == Color.WHITE && kingInCheck(blackKing, board)) || (colorTurn == Color.BLACK && kingInCheck(whiteKing, board))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean draw() {
+		if (turn == Turn.WHITETURN && !whitePlayer.hasPossibleMoves() && !whiteInCheck()) {
+			return true;
+		} else if (turn == Turn.BLACKTURN && !blackPlayer.hasPossibleMoves() && !blackInCheck()) {
+			return true;
+		} else if ( !(whitePlayer.hasPiecesToWin()) && !(blackPlayer.hasPiecesToWin()) ) {
 			return true;
 		} else {
 			return false;

@@ -284,7 +284,7 @@ public abstract class ChessPiece extends Piece{
 		board.nullPosition(sourcePosition);
 
 		ChessPiece possiblePiece = (ChessPiece) board.seePosition(movePosition);
-		if(possiblePiece instanceof King) {
+		if (possiblePiece instanceof King) {
 			board.putInPosition(piece, sourcePosition);
 			return false;
 		}
@@ -298,9 +298,25 @@ public abstract class ChessPiece extends Piece{
 
 		board.putInPosition(piece, sourcePosition);
 		return !kingInCheck;
-
 	}
 	
+	protected static boolean enPassantIsSafe(ChessBoard board, Position sourcePosition, Position movePosition, Position kingPosition, Position capturedPiecePosition) {
+		ChessPiece piece = (ChessPiece) board.seePosition(sourcePosition);		
+		board.nullPosition(sourcePosition);
+
+		ChessPiece capturedPiece = (ChessPiece) board.seePosition(capturedPiecePosition);
+		board.nullPosition(capturedPiecePosition);
+
+		board.putInPosition(piece, movePosition);
+		boolean kingInCheck = threatenedPosition(kingPosition, piece.getColor(), board);
+
+		board.nullPosition(movePosition);
+		board.putInPosition(capturedPiece, capturedPiecePosition);
+		board.putInPosition(piece, sourcePosition);
+		return !kingInCheck;
+	}
+
+
 	public abstract ArrayList<Position> getMoves(Position kingPosition);
 
 	public abstract char getLetter();

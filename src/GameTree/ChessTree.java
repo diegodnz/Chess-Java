@@ -3,6 +3,7 @@ package GameTree;
 import board.Piece;
 import board.Position;
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.pieces.*;
 
@@ -29,14 +30,14 @@ public class ChessTree {
         piecesValue.put('K', -1000);      
     }
 
-    public static int getNodeValue(String nodeBoard) {
+    public static int getNodeValue(String boardString) {
         int value = 0;        
-        for(int i = 0; i < nodeBoard.length(); i++) {
-            char piece = nodeBoard.charAt(i);
+        for(int i = 0; i < boardString.length(); i++) {
+            char piece = boardString.charAt(i);
             if(piece != '0') {                
                 value += piecesValue.get(piece);
             }
-        }
+        }        
         return value;
     }
 
@@ -63,8 +64,10 @@ public class ChessTree {
         return numOfPieces;
     }
 
-    public static ArrayList<String> getAdjacents(String boardString, Color turnColor) {        
+    public static ArrayList<BoardNode> getAdjacents(BoardNode boardNode, Color turnColor) {        
         ChessBoard board = new ChessBoard();
+        String boardString = boardNode.getRepresantation();
+        board.setLastMovement(boardNode.getLastMovement());
         King whiteKing = null;
         King blackKing = null;
         int stringIndex;
@@ -103,7 +106,7 @@ public class ChessTree {
             }
         }
 
-        ArrayList<String> adjacents = new ArrayList<>();
+        ArrayList<BoardNode> adjacents = new ArrayList<>();
         Piece[][] pieces = board.getPieces();
         for (Piece[] row : pieces) {
             for (Piece piece: row) {
@@ -114,8 +117,11 @@ public class ChessTree {
                     } else {
                         moves = ((ChessPiece) piece).getMoves(blackKing.getPosition());
                     }
+                    
                     for (Position movePosition: moves) {
-                        adjacents.add(getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition));
+                        String adjacentBoard = getMoveRepresentation(boardString, piece, piece.getPosition(), movePosition);
+                        BoardNode adjacent = new BoardNode(adjacentBoard, new ChessMove(piece.getPosition(), movePosition));
+                        adjacents.add(adjacent);
                     }
                 }
             }
@@ -126,17 +132,42 @@ public class ChessTree {
 
     private static String getMoveRepresentation(String boardString, Piece movedPiece, Position sourcePosition, Position targetPosition) {
         StringBuilder moveString = new StringBuilder();
+        int sourceRow = sourcePosition.getRow();
+        int sourceColumn = sourcePosition.getColumn();
+        int targetRow = targetPosition.getRow();
+        int targetColumn = targetPosition.getColumn();   
+
+        // En Passant
+        boolean isPawn = movedPiece instanceof Pawn;
+        boolean moveSide = sourceColumn != targetColumn;
+        boolean targetHasPiece = false;
+
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                if (row == sourcePosition.getRow() && column == sourcePosition.getColumn()) {
+                if (row == sourceRow && column == sourceColumn) {
                     moveString.append("0");
-                } else if (row == targetPosition.getRow() && column == targetPosition.getColumn()) {
+                } else if (row == targetRow && column == targetColumn) {
+                    if (boardString.charAt(row*8+column) != '0') {
+                        targetHasPiece = true;
+                    } 
                     moveString.append(((ChessPiece)movedPiece).getLetter());
                 } else {
                     moveString.append(boardString.charAt(row*8+column));
                 }
             }
         }
+
+        // En Passant
+        if (isPawn && moveSide && !targetHasPiece) {
+            if ( ((ChessPiece)movedPiece).getColor() == Color.WHITE) {
+                int enPassantIndex = (targetRow*8+targetColumn)-8;
+                moveString.replace(enPassantIndex, enPassantIndex+1, "0");
+            } else {
+                int enPassantIndex = (targetRow*8+targetColumn)+8;
+                moveString.replace(enPassantIndex, enPassantIndex+1, "0");
+            }
+        }
+
         return moveString.toString();
     }
 

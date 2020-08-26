@@ -14,6 +14,7 @@ public class ChessBoard extends Board{
 	private ChessPiece blackKing = null;
 	private ChessPiece[] whitePieces;
 	private ChessPiece[] blackPieces;
+	private ChessMove lastMovement;
 
 	public ChessBoard() {
 		super(8, 8);
@@ -37,6 +38,30 @@ public class ChessBoard extends Board{
 		return blackPieces;
 	}
 
+	public ChessMove getLastMovement() {
+		return lastMovement;
+	}
+
+	public void setLastMovement(ChessMove movement) {
+		lastMovement = movement;
+	}
+
+	public boolean canEnPassant(Position pawnToCapture) {
+		if (lastMovement == null) {
+			return false;
+		}
+		int sourceRow = lastMovement.getSource().getRow();
+		int sourceColumn = lastMovement.getSource().getColumn();
+		int targetRow = lastMovement.getTarget().getRow();
+		int targetColumn = lastMovement.getTarget().getColumn();
+		boolean pawnMoved2Squares = sourceColumn == targetColumn && (sourceRow + 2 == targetRow || sourceRow - 2 == targetRow);
+		if(pawnMoved2Squares && pawnToCapture.getRow() == targetRow && pawnToCapture.getColumn() == targetColumn) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
 	public void clone(ChessBoard board) {
 		int i = 0;
 		for(Piece[] line: pieces) {
@@ -46,10 +71,12 @@ public class ChessBoard extends Board{
 	}	
 	
 	public void doChessMove(ChessPiece piece, Position position) {		
+		setLastMovement(new ChessMove(piece.getPosition(), position));
 		putInPosition(piece, position);
 	}
 	
 	public void doChessMove(ChessPiece piece, int row, int column) {		
+		setLastMovement(new ChessMove(piece.getPosition(), new Position(row, column)));
 		putInPosition(piece, row, column);
 	}
 

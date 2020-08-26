@@ -162,7 +162,7 @@ public class ChessUI {
 		}
 	}
 
-	public static ChessMove play(ChessMatch match, Scanner sc, boolean check, boolean printUI) {
+	public static ChessMove play(ChessMatch match, Scanner sc, boolean check, boolean printUI) {		
 		if (printUI) {
 			if (check) {
 				System.out.println("\nCHECK!!");
@@ -179,13 +179,13 @@ public class ChessUI {
 				if (match.whiteIsRandom()) {
 					return match.getWhitePlayer().randomMove();
 				} else {
-					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString());
+					return match.getWhitePlayer().gameTreeMove(match.getBoard().toString(), match.getBoard());
 				}
 			} else {
 				if (match.blackIsRandom()) {
 					return match.getBlackPlayer().randomMove();					
 				} else {
-					return match.getBlackPlayer().gameTreeMove(match.getBoard().toString());
+					return match.getBlackPlayer().gameTreeMove(match.getBoard().toString(), match.getBoard());
 				}
 			}
 		} else {
