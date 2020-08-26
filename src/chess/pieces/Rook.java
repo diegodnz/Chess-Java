@@ -7,10 +7,25 @@ import board.Position;
 import chess.ChessBoard;
 import chess.ChessPiece;
 
-public class Rook extends ChessPiece{
+public class Rook extends ChessPiece {
+
+	private boolean wasMoved; //Castle
 	
 	public Rook(ChessBoard board, Position position, Color color) {
-		super(board, position, color);		
+		super(board, position, color);	
+		wasMoved = false;	
+	}
+
+	public boolean wasMoved() {
+		return wasMoved;
+	}
+
+	public void setMoved() {
+		wasMoved = true;
+	}
+
+	public void unsetMoved() {
+		wasMoved = false;
 	}
 	
 	@Override

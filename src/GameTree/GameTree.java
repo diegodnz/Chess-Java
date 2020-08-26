@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameTree {
-
-    private Game game;
+    
     private static Random gen;
 
-    public GameTree(Game game) {        
-        this.game = game;
+    public GameTree(Game game) {       
         gen = new Random();
     }
 

@@ -14,7 +14,7 @@ public class Program {
 		Scanner sc = new Scanner(System.in);		
 		// Init match		
 		PlayerType player1 = PlayerType.PERSON;
-		PlayerType player2 = PlayerType.PERSON;
+		PlayerType player2 = PlayerType.MINIMAX;
 		ChessMatch match = new ChessMatch(player1, player2);
 		boolean check = false;
 		boolean checkMate = false;

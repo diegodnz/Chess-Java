@@ -23,7 +23,7 @@ public class ChessMatch {
 	private boolean whiteIsBot;
 	private boolean blackIsBot;
 	private boolean whiteIsRandom;
-	private boolean blackIsRandom;
+	private boolean blackIsRandom;	
 
 	public ChessMatch(PlayerType player1, PlayerType player2) {
 		board = new ChessBoard();
@@ -49,8 +49,8 @@ public class ChessMatch {
 		}else if(player2 == PlayerType.MINIMAX) {
 			blackIsBot = true;
 			blackIsRandom = false;
-		}		
-		
+		}	
+			
 		startMatch();
 	}
 
@@ -164,6 +164,49 @@ public class ChessMatch {
 					+ move.getSource() + "\nTarget: " + move.getTarget());
 		} else {
 			ChessPiece piece = (ChessPiece) board.seePosition(sourceRow, sourceColumn);
+
+			//Castle
+			if (piece instanceof King) {			
+				//Left castle
+				if (targetColumn == sourceColumn - 2) {
+					ChessPiece rook = (ChessPiece)board.seePosition(sourceRow, sourceColumn - 4);
+					board.nullPosition(sourceRow, sourceColumn - 4);
+					board.putInPosition((Rook)rook, sourceRow, sourceColumn - 1);
+				}
+
+				//Right castle
+				if (targetColumn == sourceColumn + 2) {
+					ChessPiece rook = (ChessPiece)board.seePosition(sourceRow, sourceColumn + 3);
+					board.nullPosition(sourceRow, sourceColumn + 3);
+					board.putInPosition((Rook)rook, sourceRow, sourceColumn + 1);
+				}
+				((King)piece).setMoved();
+
+			} else if (piece instanceof Rook) {
+				if ( !((Rook)piece).wasMoved() ) {
+					//Left castle
+					if (targetColumn == sourceColumn + 3) {
+						ChessPiece possibleKing = (ChessPiece)board.seePosition(sourceRow, sourceColumn + 4);
+						if (possibleKing != null && possibleKing instanceof King && !((King)possibleKing).wasMoved() ) {
+							board.nullPosition(sourceRow, sourceColumn + 4);
+							board.putInPosition((King)possibleKing, sourceRow, sourceColumn + 2);
+						}
+					}
+
+					//Right castle
+					if (targetColumn == sourceColumn - 2) {
+						ChessPiece possibleKing = (ChessPiece)board.seePosition(sourceRow, sourceColumn - 3);
+						if (possibleKing != null && possibleKing instanceof King && !((King)possibleKing).wasMoved() ) {
+							board.nullPosition(sourceRow, sourceColumn - 3);
+							board.putInPosition((King)possibleKing, sourceRow, sourceColumn - 1);
+						}
+					}
+				
+
+				}
+				((Rook)piece).setMoved();
+			}
+
 			ChessPiece opponentPiece = (ChessPiece) board.seePosition(targetRow, targetColumn);
 
 			// En Passant

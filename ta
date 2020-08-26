@@ -1,0 +1,23 @@
+[33mcedab8d[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m Pawn promotion added
+[33mf0918cd[m Draw and En Passant added
+[33mf24355e[m Final game without special moves and game tree prunning
+[33mdbfa555[m Protection moves implemented in all moves
+[33md6792e6[m Implemented Rook protection moves + fix pawn check
+[33m9e8b109[m Implemented Pawn and King protection moves
+[33m2cfef91[m Game tree build completed
+[33m7643cce[m Implementing the king protection
+[33m8db6ac1[m Starting the implementation of the game tree
+[33m1c4dd41[m Final game without special moves
+[33mef2f5e4[m Added: Check msg and Player owns pieces
+[33me8b11b7[m King simple moves
+[33ma3cf617[m Horse movements and fixing capture print
+[33m14d1992[m Printing possible movements
+[33m07f38ee[m Added: Rook, Bishop and Queen moves
+[33m3057aab[m Added: Exceptions in movements
+[33m6b71a1d[m Added: Rook movements
+[33m1868195[m Added: Pawn movements without specials
+[33m8058ec7[m Performing moves without rules and exceptions
+[33mcaf90f0[m Putting pieces
+[33m90eaec1[m Printing board
+[33m4a2634b[m First commit
+[33m3d9f2cc[m Initial commit
