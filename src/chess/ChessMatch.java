@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.Scanner;
+
 import board.BoardException;
 import board.Piece;
 import board.Position;
@@ -10,8 +13,6 @@ import chess.pieces.King;
 import chess.pieces.Pawn;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
-
-import java.util.ArrayList;
 
 public class ChessMatch {
 
@@ -151,7 +152,7 @@ public class ChessMatch {
 		}
 	}
 
-	public void peformMove(ChessMove move) {
+	public void peformMove(Scanner sc, ChessMove move) {
 		//System.out.println(move.getSource().getRow() + " " + move.getSource().getColumn() + "  " + move.getTarget().getRow() + " " + move.getTarget().getColumn());
 		int sourceRow = move.getSource().getRow();
 		int sourceColumn = move.getSource().getColumn();
@@ -192,6 +193,54 @@ public class ChessMatch {
 				} else {
 					blackPlayer.addLostPiece(opponentPiece);
 				}
+			}
+
+			if (piece instanceof Pawn && (targetRow == 0 || targetRow == 7) ) {
+				pawnPromotion(sc, targetRow, targetColumn);
+			}
+		}
+	}
+
+	private ChessPiece choosePiece(Scanner sc, int targetRow, int targetColumn, Color color) {
+		System.out.println("Your Pawn can be promoted!! Choose one promotion piece: \nq - Queen \nr - Rook \nh - Horse \nb - Bishop");
+		char promotionPiece;
+		do {
+			System.out.println("Enter the piece (q,r,h or b): ");
+			promotionPiece = sc.next().charAt(0);
+		} while (promotionPiece != 'q' && promotionPiece != 'r' && promotionPiece != 'h' && promotionPiece != 'b');
+
+		if (promotionPiece == 'b') {
+			return new Bishop(board, new Position(targetRow, targetColumn), color);
+		} else if (promotionPiece == 'r') {
+			return new Rook(board, new Position(targetRow, targetColumn), color);
+		} else if (promotionPiece == 'h') {
+			return new Horse(board, new Position(targetRow, targetColumn), color);
+		} else {
+			return new Queen(board, new Position(targetRow, targetColumn), color);
+		}
+	}
+
+	public void pawnPromotion(Scanner sc, int targetRow, int targetColumn) {
+		Position position = new Position(targetRow, targetColumn);
+		if (turn == Turn.WHITETURN) {
+			if (whiteIsBot) {
+				Queen newPiece = new Queen(board, position, Color.WHITE);
+				whitePlayer.promotePawn(newPiece);
+				board.putInPosition(newPiece, position);
+			} else {			
+				ChessPiece newPiece = choosePiece(sc, targetRow, targetColumn, Color.WHITE);
+				whitePlayer.promotePawn(newPiece);
+				board.putInPosition(newPiece, position);				
+			}
+		} else {
+			if (blackIsBot) {
+				Queen newPiece = new Queen(board, position, Color.BLACK);
+				blackPlayer.promotePawn(newPiece);
+				board.putInPosition(newPiece, position);
+			} else {
+				ChessPiece newPiece = choosePiece(sc, targetRow, targetColumn, Color.BLACK);
+				blackPlayer.promotePawn(newPiece);
+				board.putInPosition(newPiece, position);
 			}
 		}
 	}

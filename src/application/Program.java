@@ -13,8 +13,8 @@ public class Program {
 	public static void main(String[] args) throws InterruptedException {
 		Scanner sc = new Scanner(System.in);		
 		// Init match		
-		PlayerType player1 = PlayerType.BOT;
-		PlayerType player2 = PlayerType.BOT;
+		PlayerType player1 = PlayerType.PERSON;
+		PlayerType player2 = PlayerType.PERSON;
 		ChessMatch match = new ChessMatch(player1, player2);
 		boolean check = false;
 		boolean checkMate = false;
@@ -26,7 +26,7 @@ public class Program {
 			ChessUI.printBoard(match.getBoard());
 			ChessUI.printCapturedPieces(match);			
 			move = ChessUI.play(match, sc, check, true);			
-			match.peformMove(move);
+			match.peformMove(sc, move);
 			check = match.check();
 			match.changeTurn();
 

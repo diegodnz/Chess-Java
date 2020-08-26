@@ -61,6 +61,17 @@ public class ChessPlayer {
 		normalPieces[index] = piece;
 	}
 
+	public void promotePawn(ChessPiece piece) {		
+		for (int i = 0; i < normalPieces.length; i++) {		
+			if (normalPieces[i] != null) {				
+				if (normalPieces[i].getLetter() == 'p' || normalPieces[i].getLetter() == 'P') {
+					normalPieces[i] = piece;
+					break;
+				}
+			}
+		}			
+	}	
+
 	public boolean hasPossibleMoves() {
 		if (!king.getMoves().isEmpty()) {
 			return true;
