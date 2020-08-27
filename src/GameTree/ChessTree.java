@@ -9,6 +9,7 @@ import chess.pieces.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class ChessTree {
 
@@ -21,13 +22,13 @@ public class ChessTree {
         piecesValue.put('h', 30);
         piecesValue.put('b', 30);
         piecesValue.put('q', 90);   
-        piecesValue.put('k', 1000);     
+        piecesValue.put('k', 10000);     
         piecesValue.put('P', -10);
         piecesValue.put('R', -50);
         piecesValue.put('H', -30);
         piecesValue.put('B', -30);
         piecesValue.put('Q', -90);  
-        piecesValue.put('K', -1000);      
+        piecesValue.put('K', -10000);      
     }
 
     public static int getNodeValue(String boardString) {
@@ -107,9 +108,14 @@ public class ChessTree {
         }
 
         ArrayList<BoardNode> adjacents = new ArrayList<>();
-        Piece[][] pieces = board.getPieces();
-        for (Piece[] row : pieces) {
-            for (Piece piece: row) {
+        Piece[][] pieces = board.getPieces();     
+        int[] rows = {0,1,2,3,4,5,6,7};
+        int[] columns = {0,1,2,3,4,5,6,7}; 
+        shuffleVect(rows, 8);
+        shuffleVect(columns, 8);        
+        for (int i = 0; i < 8; i++) {           
+            for (int j = 0; j < 8; j++) {
+                Piece piece = pieces[ rows[i] ][ columns[j] ];
                 if (piece != null && turnColor == ((ChessPiece)piece).getColor()) {
                     ArrayList<Position> moves;
                     if (((ChessPiece) piece).getColor() == Color.WHITE) {
@@ -126,7 +132,18 @@ public class ChessTree {
                 }
             }
         }
-        
+
+        // Add null object in adjacents means a check-mate
+        if (turnColor == Color.BLACK) {
+            if (adjacents.isEmpty() && ChessPiece.threatenedPosition(board.getBlackKing().getPosition(), Color.BLACK, board)) {
+                adjacents.add(null);
+            }
+        } else if (turnColor == Color.WHITE) {
+            if (adjacents.isEmpty() && ChessPiece.threatenedPosition(board.getWhiteKing().getPosition(), Color.WHITE, board)) {
+                adjacents.add(null);
+            }
+        }
+
         return adjacents;        
     }
 
@@ -180,6 +197,16 @@ public class ChessTree {
         }
 
         return moveString.toString();
+    }
+
+    private static void shuffleVect(int[] vect, int size) {
+        Random gen = new Random();
+        for (int i = 0; i < 2; i++) {
+            int randomIndex = gen.nextInt(size-1) + 1;
+            int first = vect[0];
+            vect[0] = vect[randomIndex];
+            vect[randomIndex] = first;
+        }
     }
 
 }

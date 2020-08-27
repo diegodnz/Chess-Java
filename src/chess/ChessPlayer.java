@@ -136,7 +136,7 @@ public class ChessPlayer {
 
 	public ChessMove gameTreeMove(String boardString, ChessBoard board) {
 		GameTree gameTree = new GameTree(Game.CHESS);
-		String movementBoard = gameTree.searchChessBestMove(boardString, board.getLastMovement(), 4, this.color);		
+		String movementBoard = gameTree.searchChessBestMove(boardString, board.getLastMovement(), 5, this.color);		
 		return getMove(boardString, movementBoard);
 	}
 
