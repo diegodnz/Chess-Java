@@ -138,7 +138,8 @@ public class ChessTree {
         int targetColumn = targetPosition.getColumn();   
 
         // En Passant
-        boolean isPawn = movedPiece instanceof Pawn;
+        // Also used in pawn promotion
+        boolean isPawn = movedPiece instanceof Pawn;  
         boolean moveSide = sourceColumn != targetColumn;
         boolean targetHasPiece = false;
 
@@ -150,7 +151,17 @@ public class ChessTree {
                     if (boardString.charAt(row*8+column) != '0') {
                         targetHasPiece = true;
                     } 
-                    moveString.append(((ChessPiece)movedPiece).getLetter());
+
+                    // Pawn Promotion
+                    if (isPawn && (targetRow == 0 || targetRow == 7)) {
+                        if ( ((ChessPiece)movedPiece).getColor() == Color.WHITE ) {
+                            moveString.append('q');
+                        } else {
+                            moveString.append('Q');
+                        }
+                    } else {
+                        moveString.append(((ChessPiece)movedPiece).getLetter());
+                    }
                 } else {
                     moveString.append(boardString.charAt(row*8+column));
                 }

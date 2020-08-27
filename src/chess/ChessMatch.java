@@ -424,11 +424,12 @@ public class ChessMatch {
 	private void startMatch() {
 		blackPlayer = new ChessPlayer(new King(board, new Position(0, 4), Color.BLACK));
 		whitePlayer = new ChessPlayer(new King(board, new Position(7, 4), Color.WHITE));
-
-		for (int i = 0; i < 8; i++) { // Pawns
-			blackPlayer.addPiece(new Pawn(board, new Position(1, i), Color.BLACK), 7 + i);
+		
+		for (int i = 0; i < 8; i++) { // Pawns			
+			blackPlayer.addPiece(new Pawn(board, new Position(1, i), Color.BLACK), 7 + i);			
 			whitePlayer.addPiece(new Pawn(board, new Position(6, i), Color.WHITE), 7 + i);
-		}
+			
+		}		
 
 		blackPlayer.addPiece(new Rook(board, new Position(0, 0), Color.BLACK), 0);
 		blackPlayer.addPiece(new Rook(board, new Position(0, 7), Color.BLACK), 6);
@@ -438,7 +439,7 @@ public class ChessMatch {
 		blackPlayer.addPiece(new Bishop(board, new Position(0, 5), Color.BLACK), 4);
 		blackPlayer.addPiece(new Queen(board, new Position(0, 3), Color.BLACK), 3);
 
-		whitePlayer.addPiece(new Rook(board, new Position(7, 0), Color.WHITE), 0);
+		whitePlayer.addPiece(new Rook(board, new Position(7, 0), Color.WHITE), 0);				
 		whitePlayer.addPiece(new Rook(board, new Position(7, 7), Color.WHITE), 6);
 		whitePlayer.addPiece(new Horse(board, new Position(7, 1), Color.WHITE), 1);
 		whitePlayer.addPiece(new Horse(board, new Position(7, 6), Color.WHITE), 5);
